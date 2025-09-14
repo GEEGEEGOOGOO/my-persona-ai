@@ -18,4 +18,4 @@ EXPOSE 8501
 
 # The command to run when the container starts
 
-CMD ["streamlit", "run", "webapp.py", "--server.port=$PORT", "--server.address=0.0.0.0"]
+CMD exec streamlit run webapp.py --server.port=$PORT --server.address=0.0.0.0
