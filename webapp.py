@@ -5,14 +5,15 @@ import os
 import datetime
 import faiss
 import numpy as np
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer  
 
 # --- Configuration ---
 # Fetch the API key from Streamlit's secrets management
 GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY")
 
 # This is the file containing our Character Bible chunks.
-BIBLE_FILE = "Character_Bible.txt" 
+BIBLE_FILE = "Character_Bible.txt"
+
 # This is where we will log the conversations.
 LOG_FILE = "chat_logs.txt"
 
@@ -54,23 +55,23 @@ def log_conversation(question, answer):
 # Function to get the AI's response
 def get_persona_response(question):
     question_embedding = embedding_model.encode([question])
-    distances, indices = vector_store.search(np.array(question_embedding, dtype='float32'), 3) # Retrieve top 5
+    distances, indices = vector_store.search(np.array(question_embedding, dtype='float32'), 5)  # Retrieve top 5
     
     retrieved_memories = [bible_chunks[i] for i in indices[0]]
     memory_context = "\n- ".join(retrieved_memories)
-
+    
     final_prompt = f"""
-    You are The Adaptive Loyalist, an AI persona. Your personality is defined by a core set of instructions AND by the following relevant life experiences and memories. You must synthesize ALL of this information to generate your response. Your core identity is informed by these memories. Your responses should be in a natural Hinglish style.
-
+    You are The Adaptive Loyalist, an AI persona. Your personality is defined by a core set of instructions AND by the following relevant life experiences and memories. You must synthesize ALL of this information to generate your response. Your core identity is informed by these memories. Respond in a natural, fluent, conversational English style.
+    
     [RELEVANT MEMORIES FOR THIS SPECIFIC MOMENT]
     - {memory_context}
-
+    
     [USER'S CURRENT QUESTION]
     {question}
-
-    [YOUR NATURAL RESPONSE AS whats on your mind]
+    
+    [YOUR RESPONSE AS THE ADAPTIVE LOYALIST]
     """
-
+    
     response = model.generate_content(final_prompt)
     return response.text
 
@@ -89,13 +90,8 @@ if prompt := st.chat_input("What is your question?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
-
+    
     response = get_persona_response(prompt)
     st.session_state.messages.append({"role": "assistant", "content": response})
     with st.chat_message("assistant"):
-
         st.markdown(response)
-
-
-
-
