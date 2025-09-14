@@ -14,7 +14,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Tell Docker that the container listens on port 8501
-EXPOSE 8501
+EXPOSE 8080
 
 # The command to run when the container starts
-CMD ["streamlit", "run", "webapp.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "webapp.py", "--server.port=8080", "--server.address=0.0.0.0"]
+
