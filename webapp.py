@@ -68,7 +68,7 @@ def get_persona_response(question):
     [USER'S CURRENT QUESTION]
     {question}
 
-    [YOUR RESPONSE AS THE ADAPTIVE LOYALIST]
+    [YOUR RESPONSE AS THE ENGLISH ADAPTIVE LOYALIST]
     """
 
     response = model.generate_content(final_prompt)
@@ -95,3 +95,4 @@ if prompt := st.chat_input("What is your question?"):
     with st.chat_message("assistant"):
 
         st.markdown(response)
+
