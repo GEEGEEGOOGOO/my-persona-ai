@@ -62,201 +62,347 @@ def get_persona_response(question, chat_history):
     response = model.generate_content(final_prompt)
     return response.text
 
-# --- Abstract Minimalist CSS ---
+# --- AMC x Ghost of Tsushima Inspired CSS ---
 st.markdown("""
     <style>
-    /* Import futuristic font */
-    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap');
+    /* Import elegant fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;700&family=Inter:wght@300;400;500&display=swap');
     
-    /* Global app styling */
+    /* Global app styling with rich cinematic background */
     .stApp {
-        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-        color: #ffffff;
-        font-family: 'JetBrains Mono', monospace;
+        background: 
+            radial-gradient(circle at 20% 80%, rgba(220, 38, 38, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(251, 191, 36, 0.05) 0%, transparent 50%),
+            linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 25%, #0a0a0a 50%, #1a1716 75%, #0f0f0f 100%);
+        color: #f5f5f5;
+        font-family: 'Inter', sans-serif;
+        min-height: 100vh;
     }
     
-    /* Hide default streamlit elements */
+    /* Hide streamlit elements */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
+    .stDeployButton {display: none;}
     
-    /* Abstract title design */
-    .abstract-title {
-        font-size: 42px;
-        font-weight: 300;
-        text-align: center;
-        padding: 40px 20px;
-        margin: 20px 0;
-        background: linear-gradient(45deg, transparent 0%, #ffffff10 25%, transparent 50%, #ffffff10 75%, transparent 100%);
-        border: 1px solid #333366;
-        color: #ffffff;
-        letter-spacing: 8px;
-        text-transform: uppercase;
+    /* Cinematic header with Japanese-inspired elements */
+    .cinematic-header {
         position: relative;
+        background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%);
+        border-bottom: 2px solid #d4af37;
+        padding: 30px 0;
+        margin-bottom: 20px;
         overflow: hidden;
     }
     
-    .abstract-title::before {
+    .cinematic-header::before {
         content: '';
         position: absolute;
-        top: -2px;
-        left: -2px;
-        right: -2px;
-        bottom: -2px;
-        background: linear-gradient(45deg, #00ffff20, #ff00ff20, #ffff0020);
-        z-index: -1;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, #d4af37, #dc2626, #d4af37, transparent);
+        animation: shimmer 3s ease-in-out infinite;
     }
     
-    /* Status bar */
-    .status-bar {
-        background: #000011;
-        border: 1px solid #333366;
-        padding: 8px 16px;
-        margin: 10px 0;
-        font-size: 12px;
-        color: #ccccdd;
+    @keyframes shimmer {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+    }
+    
+    /* Main title styling */
+    .main-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 48px;
+        font-weight: 300;
         text-align: center;
-        letter-spacing: 2px;
+        color: #f5f5f5;
+        margin: 0;
+        letter-spacing: 3px;
+        text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        position: relative;
     }
     
-    /* Chat container */
-    .chat-container {
+    .main-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, #d4af37, transparent);
+    }
+    
+    /* Status bar with AMC-style design */
+    .status-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.6);
+        border: 1px solid #333;
+        border-left: 4px solid #dc2626;
+        padding: 12px 24px;
         margin: 20px 0;
-        padding: 0;
+        font-size: 13px;
+        color: #cccccc;
+        backdrop-filter: blur(10px);
     }
     
-    /* User message styling */
-    .user-msg {
-        background: linear-gradient(90deg, #222244 0%, #333366 100%);
-        border: 1px solid #444477;
-        border-left: 4px solid #00ffff;
-        color: #ffffff;
-        padding: 16px 20px;
-        margin: 8px 0;
-        font-size: 14px;
-        font-weight: 400;
-        position: relative;
-        transform: translateX(20px);
+    .status-left, .status-right {
+        display: flex;
+        align-items: center;
+        gap: 20px;
     }
     
-    .user-msg::before {
-        content: 'USER>';
-        position: absolute;
-        top: -1px;
-        left: -1px;
-        background: #00ffff;
-        color: #000000;
-        padding: 2px 8px;
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 1px;
-    }
-    
-    /* Assistant message styling */
-    .assistant-msg {
-        background: linear-gradient(90deg, #112222 0%, #223333 100%);
-        border: 1px solid #447744;
-        border-left: 4px solid #00ff88;
-        color: #ffffff;
-        padding: 16px 20px;
-        margin: 8px 0;
-        font-size: 14px;
-        font-weight: 400;
-        position: relative;
-        transform: translateX(-20px);
-    }
-    
-    .assistant-msg::before {
-        content: 'AI>';
-        position: absolute;
-        top: -1px;
-        right: -1px;
+    .status-indicator {
+        width: 8px;
+        height: 8px;
         background: #00ff88;
-        color: #000000;
-        padding: 2px 8px;
-        font-size: 10px;
-        font-weight: 700;
-        letter-spacing: 1px;
+        margin-right: 8px;
+        animation: pulse 2s ease-in-out infinite;
     }
     
-    /* Input area styling */
+    @keyframes pulse {
+        0%, 100% { opacity: 0.4; }
+        50% { opacity: 1; }
+    }
+    
+    /* Chat container with Ghost of Tsushima inspiration */
+    .chat-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    /* User message - AMC red theme */
+    .user-message {
+        background: linear-gradient(135deg, rgba(220, 38, 38, 0.15) 0%, rgba(0, 0, 0, 0.8) 100%);
+        border: 1px solid rgba(220, 38, 38, 0.3);
+        border-left: 4px solid #dc2626;
+        margin: 16px 0 16px 60px;
+        padding: 20px 24px;
+        position: relative;
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+    }
+    
+    .user-message:hover {
+        border-left-color: #fbbf24;
+        transform: translateX(-2px);
+    }
+    
+    .user-message::before {
+        content: 'YOU';
+        position: absolute;
+        top: -1px;
+        right: 16px;
+        background: #dc2626;
+        color: #ffffff;
+        padding: 4px 12px;
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 1px;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    /* Assistant message - Golden/amber theme */
+    .assistant-message {
+        background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%);
+        border: 1px solid rgba(212, 175, 55, 0.3);
+        border-left: 4px solid #d4af37;
+        margin: 16px 60px 16px 0;
+        padding: 20px 24px;
+        position: relative;
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+    }
+    
+    .assistant-message:hover {
+        border-left-color: #dc2626;
+        transform: translateX(2px);
+    }
+    
+    .assistant-message::before {
+        content: 'LOYALIST';
+        position: absolute;
+        top: -1px;
+        left: 16px;
+        background: #d4af37;
+        color: #000000;
+        padding: 4px 12px;
+        font-size: 10px;
+        font-weight: 500;
+        letter-spacing: 1px;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    /* Message text styling */
+    .user-message p, .assistant-message p {
+        margin: 0;
+        line-height: 1.6;
+        font-size: 15px;
+        color: #f5f5f5;
+    }
+    
+    /* Input styling */
+    .stChatInput > div > div {
+        background: rgba(0, 0, 0, 0.7) !important;
+        border: 1px solid #333 !important;
+        border-radius: 0 !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
     .stChatInput > div > div > input {
-        background: #000011 !important;
-        border: 1px solid #333366 !important;
-        color: #ffffff !important;
-        font-family: 'JetBrains Mono', monospace !important;
-        font-size: 14px !important;
-        padding: 12px !important;
+        background: transparent !important;
+        border: none !important;
+        color: #f5f5f5 !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 15px !important;
+        padding: 16px 20px !important;
+    }
+    
+    .stChatInput > div > div > input::placeholder {
+        color: #888888 !important;
+        font-style: italic !important;
     }
     
     .stChatInput > div > div > input:focus {
-        border-color: #00ffff !important;
-        box-shadow: 0 0 10px #00ffff40 !important;
+        outline: none !important;
+        box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.5) !important;
     }
     
-    /* Abstract geometric elements */
-    .geometric-accent {
+    /* Decorative elements inspired by Ghost of Tsushima */
+    .decorative-element {
         position: fixed;
         pointer-events: none;
         z-index: -1;
+        opacity: 0.1;
     }
     
-    .geo-1 {
-        top: 10%;
+    .deco-1 {
+        top: 15%;
         right: 5%;
-        width: 100px;
-        height: 100px;
-        border: 1px solid #333366;
-        transform: rotate(45deg);
+        width: 150px;
+        height: 150px;
+        border: 1px solid #d4af37;
+        border-radius: 50%;
+        background: radial-gradient(circle, transparent 40%, rgba(212, 175, 55, 0.05) 100%);
     }
     
-    .geo-2 {
+    .deco-2 {
         bottom: 20%;
         left: 3%;
-        width: 80px;
-        height: 80px;
-        border: 1px solid #663333;
-        background: linear-gradient(45deg, transparent, #66333320);
+        width: 200px;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.3), transparent);
+        transform: rotate(-15deg);
     }
     
-    .geo-3 {
-        top: 50%;
-        left: 1%;
+    .deco-3 {
+        top: 40%;
+        right: 1%;
         width: 2px;
-        height: 200px;
-        background: linear-gradient(180deg, transparent, #00ffff40, transparent);
+        height: 300px;
+        background: linear-gradient(180deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+    }
+    
+    /* Scrollbar styling - BOXY */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.3);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #dc2626, #d4af37);
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #d4af37, #dc2626);
     }
     </style>
 """, unsafe_allow_html=True)
 
-# --- Abstract geometric background elements ---
+# --- Decorative background elements ---
 st.markdown("""
-    <div class="geometric-accent geo-1"></div>
-    <div class="geometric-accent geo-2"></div>
-    <div class="geometric-accent geo-3"></div>
+    <div class="decorative-element deco-1"></div>
+    <div class="decorative-element deco-2"></div>
+    <div class="decorative-element deco-3"></div>
 """, unsafe_allow_html=True)
 
-# --- Main App ---
-st.markdown('<div class="abstract-title">Neural Interface</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="status-bar">SYSTEM ONLINE | MEMORY BANKS: {len(bible_chunks)} | STATUS: ACTIVE</div>', unsafe_allow_html=True)
+# --- Cinematic Header ---
+st.markdown("""
+    <div class="cinematic-header">
+        <h1 class="main-title">The Adaptive Loyalist</h1>
+    </div>
+""", unsafe_allow_html=True)
 
+# --- Status Bar ---
+st.markdown(f"""
+    <div class="status-container">
+        <div class="status-left">
+            <div style="display: flex; align-items: center;">
+                <div class="status-indicator"></div>
+                <span>NEURAL INTERFACE ACTIVE</span>
+            </div>
+            <span>MEMORY BANKS: {len(bible_chunks)}</span>
+        </div>
+        <div class="status-right">
+            <span>SYSTEM STATUS: ONLINE</span>
+            <span>RESPONSE MODE: ADAPTIVE</span>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+
+# Initialize session state
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Render chat messages
+# Chat container
 st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+
+# Render past messages
 for message in st.session_state.messages:
     if message["role"] == "user":
-        st.markdown(f'<div class="user-msg">{message["content"]}</div>', unsafe_allow_html=True)
+        st.markdown(f"""
+            <div class="user-message">
+                <p>{message["content"]}</p>
+            </div>
+        """, unsafe_allow_html=True)
     else:
-        st.markdown(f'<div class="assistant-msg">{message["content"]}</div>', unsafe_allow_html=True)
+        st.markdown(f"""
+            <div class="assistant-message">
+                <p>{message["content"]}</p>
+            </div>
+        """, unsafe_allow_html=True)
+
 st.markdown('</div>', unsafe_allow_html=True)
 
 # Chat input
-if prompt := st.chat_input("Enter neural query..."):
+if prompt := st.chat_input("Share your thoughts with the Loyalist..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
-    st.markdown(f'<div class="user-msg">{prompt}</div>', unsafe_allow_html=True)
+    
+    # Display new user message
+    st.markdown(f"""
+        <div class="chat-container">
+            <div class="user-message">
+                <p>{prompt}</p>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
 
+    # Get and display response
     response = get_persona_response(prompt, st.session_state.messages)
     st.session_state.messages.append({"role": "assistant", "content": response})
-    st.markdown(f'<div class="assistant-msg">{response}</div>', unsafe_allow_html=True)
+    
+    st.markdown(f"""
+        <div class="chat-container">
+            <div class="assistant-message">
+                <p>{response}</p>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
