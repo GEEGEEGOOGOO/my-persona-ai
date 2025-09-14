@@ -417,6 +417,14 @@ if "messages" not in st.session_state:
 # Content area
 st.markdown('<div class="content-area">', unsafe_allow_html=True)
 
+# Add this block to display a welcome message if the chat is empty
+if not st.session_state.messages:
+    st.markdown(f"""
+        <div class="ai-message">
+            <p class="message-text">Hello! I'm The Adaptive Loyalist. How can I assist you today?</p>
+        </div>
+    """, unsafe_allow_html=True)
+
 # Display messages as Claude-style bubbles
 for message in st.session_state.messages:
     if message["role"] == "user":
