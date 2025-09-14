@@ -54,7 +54,7 @@ def log_conversation(question, answer):
 # Function to get the AI's response
 def get_persona_response(question):
     question_embedding = embedding_model.encode([question])
-    distances, indices = vector_store.search(np.array(question_embedding, dtype='float32'), 5) # Retrieve top 5
+    distances, indices = vector_store.search(np.array(question_embedding, dtype='float32'), 3) # Retrieve top 5
     
     retrieved_memories = [bible_chunks[i] for i in indices[0]]
     memory_context = "\n- ".join(retrieved_memories)
@@ -95,5 +95,6 @@ if prompt := st.chat_input("What is your question?"):
     with st.chat_message("assistant"):
 
         st.markdown(response)
+
 
 
