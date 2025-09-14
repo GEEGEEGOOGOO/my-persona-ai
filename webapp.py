@@ -75,7 +75,7 @@ def get_persona_response(question):
     return response.text
 
 # --- Main App ---
-st.title("The Adaptive Loyalist AI")
+st.title("whats on your mind")
 st.caption(f"Memory Status: Online | Total Memories: {len(bible_chunks)}")
 
 if "messages" not in st.session_state:
@@ -95,4 +95,5 @@ if prompt := st.chat_input("What is your question?"):
     with st.chat_message("assistant"):
 
         st.markdown(response)
+
 
