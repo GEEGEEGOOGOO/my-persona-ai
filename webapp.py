@@ -62,277 +62,177 @@ def get_persona_response(question, chat_history):
     response = model.generate_content(final_prompt)
     return response.text
 
-# --- Clean Layout CSS ---
+# --- 1990s Minimalist CSS ---
 st.markdown("""
     <style>
-    /* Import fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;700&family=Inter:wght@300;400;500&display=swap');
+    /* 1990s style fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
     
-    /* Global app styling */
+    /* Extreme minimalist 1990s styling */
     .stApp {
-        background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 25%, #0a0a0a 50%, #1a1716 75%, #0f0f0f 100%);
-        color: #f5f5f5;
-        font-family: 'Inter', sans-serif;
-        height: 100vh;
-        overflow: hidden;
+        background-color: #000000;
+        color: #ffffff;
+        font-family: 'Courier Prime', monospace;
+        font-size: 14px;
+        line-height: 1.4;
     }
     
-    /* Hide streamlit elements */
+    /* Hide all streamlit elements */
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     .stDeployButton {display: none;}
     
-    /* Main container with 3:5:2 layout */
-    .main-container {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-    }
-    
-    /* Title Section - 30% height */
-    .title-section {
-        height: 30vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        background: rgba(0, 0, 0, 0.8);
-        border-bottom: 1px solid #333;
-        position: relative;
-    }
-    
-    .main-title {
-        font-family: 'Playfair Display', serif;
-        font-size: 48px;
-        font-weight: 300;
+    /* Simple title */
+    .retro-title {
+        background-color: #111111;
         color: #ffffff;
-        margin: 0;
-        letter-spacing: 3px;
-        text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-    }
-    
-    .status-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: rgba(0, 0, 0, 0.9);
-        border: 1px solid #333;
-        border-left: 4px solid #dc2626;
-        padding: 12px 24px;
-        margin-top: 20px;
-        width: 80%;
-        font-size: 13px;
-        color: #cccccc;
-    }
-    
-    .status-left, .status-right {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-    }
-    
-    .status-indicator {
-        width: 8px;
-        height: 8px;
-        background: #00ff88;
-        margin-right: 8px;
-        animation: pulse 2s ease-in-out infinite;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { opacity: 0.4; }
-        50% { opacity: 1; }
-    }
-    
-    /* Interaction Section - 50% height */
-    .interaction-section {
-        height: 50vh;
         padding: 20px;
-        overflow-y: auto;
-        background: rgba(0, 0, 0, 0.3);
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        border-bottom: 1px solid #333333;
+        margin-bottom: 10px;
     }
     
-    /* Message styling - Clean and aligned */
-    .message-container {
+    /* Basic status info */
+    .status-info {
+        background-color: #0a0a0a;
+        color: #cccccc;
+        padding: 10px 20px;
+        font-size: 12px;
+        border-bottom: 1px solid #222222;
+        margin-bottom: 20px;
+    }
+    
+    /* Chat area */
+    .chat-area {
+        padding: 10px 20px;
         max-width: 800px;
         margin: 0 auto;
     }
     
-    .user-message {
-        background: rgba(220, 38, 38, 0.1);
-        border: 1px solid rgba(220, 38, 38, 0.3);
-        border-left: 4px solid #dc2626;
-        margin: 16px 0;
-        padding: 20px 24px;
-        position: relative;
+    /* User message - simple box */
+    .user-msg {
+        background-color: #1a1a1a;
+        border: 1px solid #333333;
+        padding: 15px;
+        margin: 10px 0;
         color: #ffffff;
     }
     
-    .user-message::before {
-        content: 'YOU';
-        position: absolute;
-        top: -1px;
-        right: 16px;
-        background: #dc2626;
+    .user-msg::before {
+        content: 'USER:';
+        display: block;
+        font-weight: bold;
         color: #ffffff;
-        padding: 4px 12px;
-        font-size: 10px;
-        font-weight: 500;
-        letter-spacing: 1px;
+        margin-bottom: 5px;
     }
     
-    .assistant-message {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-left: 4px solid #ffffff;
-        margin: 16px 0;
-        padding: 20px 24px;
-        position: relative;
+    /* Assistant message - simple box */
+    .ai-msg {
+        background-color: #0f0f0f;
+        border: 1px solid #222222;
+        padding: 15px;
+        margin: 10px 0;
+        color: #dddddd;
+    }
+    
+    .ai-msg::before {
+        content: 'LOYALIST:';
+        display: block;
+        font-weight: bold;
         color: #ffffff;
+        margin-bottom: 5px;
     }
     
-    .assistant-message::before {
-        content: 'LOYALIST';
-        position: absolute;
-        top: -1px;
-        left: 16px;
-        background: #ffffff;
-        color: #000000;
-        padding: 4px 12px;
-        font-size: 10px;
-        font-weight: 500;
-        letter-spacing: 1px;
-    }
-    
-    .message-text {
-        margin: 0;
-        line-height: 1.6;
-        font-size: 15px;
-    }
-    
-    /* Input Section - 20% height */
-    .input-section {
-        height: 20vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(0, 0, 0, 0.8);
-        border-top: 1px solid #333;
-        padding: 20px;
-    }
-    
-    .stChatInput {
-        width: 100% !important;
-        max-width: 800px !important;
-    }
-    
-    .stChatInput > div {
-        width: 100% !important;
-    }
-    
+    /* Input styling - basic 1990s form */
     .stChatInput > div > div {
-        background: rgba(0, 0, 0, 0.9) !important;
-        border: 1px solid #333 !important;
-        backdrop-filter: blur(10px) !important;
+        background-color: #000000 !important;
+        border: 1px solid #333333 !important;
     }
     
     .stChatInput > div > div > input {
-        background: transparent !important;
+        background-color: #000000 !important;
         border: none !important;
         color: #ffffff !important;
-        font-family: 'Inter', sans-serif !important;
-        font-size: 15px !important;
-        padding: 16px 20px !important;
+        font-family: 'Courier Prime', monospace !important;
+        font-size: 14px !important;
+        padding: 10px !important;
     }
     
     .stChatInput > div > div > input::placeholder {
-        color: #888888 !important;
-        font-style: italic !important;
+        color: #666666 !important;
     }
     
     .stChatInput > div > div > input:focus {
-        outline: none !important;
-        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3) !important;
+        outline: 1px solid #ffffff !important;
+        background-color: #111111 !important;
     }
     
-    /* Scrollbar styling */
+    /* Simple scrollbar */
     ::-webkit-scrollbar {
-        width: 8px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: rgba(0, 0, 0, 0.3);
+        width: 12px;
+        background-color: #000000;
     }
     
     ::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, #dc2626, #ffffff);
+        background-color: #333333;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(180deg, #ffffff, #dc2626);
+        background-color: #555555;
+    }
+    
+    /* Remove all animations and transitions */
+    * {
+        transition: none !important;
+        animation: none !important;
     }
     </style>
+""", unsafe_allow_html=True)
+
+# Simple title
+st.markdown("""
+    <div class="retro-title">
+        THE ADAPTIVE LOYALIST
+    </div>
+""", unsafe_allow_html=True)
+
+# Basic status
+st.markdown(f"""
+    <div class="status-info">
+        System Status: ONLINE | Memory Banks: {len(bible_chunks)} | Mode: Interactive
+    </div>
 """, unsafe_allow_html=True)
 
 # Initialize session state
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Create the 3-section layout
-st.markdown('<div class="main-container">', unsafe_allow_html=True)
+# Chat area
+st.markdown('<div class="chat-area">', unsafe_allow_html=True)
 
-# TITLE SECTION (30%)
-st.markdown("""
-    <div class="title-section">
-        <h1 class="main-title">The Adaptive Loyalist</h1>
-        <div class="status-bar">
-            <div class="status-left">
-                <div style="display: flex; align-items: center;">
-                    <div class="status-indicator"></div>
-                    <span>NEURAL INTERFACE ACTIVE</span>
-                </div>
-                <span>MEMORY BANKS: """ + str(len(bible_chunks)) + """</span>
-            </div>
-            <div class="status-right">
-                <span>SYSTEM STATUS: ONLINE</span>
-                <span>RESPONSE MODE: ADAPTIVE</span>
-            </div>
-        </div>
-    </div>
-""", unsafe_allow_html=True)
-
-# INTERACTION SECTION (50%)
-st.markdown('<div class="interaction-section">', unsafe_allow_html=True)
-st.markdown('<div class="message-container">', unsafe_allow_html=True)
-
-# Render messages
+# Display messages in simple boxes
 for message in st.session_state.messages:
     if message["role"] == "user":
         st.markdown(f"""
-            <div class="user-message">
-                <p class="message-text">{message["content"]}</p>
+            <div class="user-msg">
+                {message["content"]}
             </div>
         """, unsafe_allow_html=True)
     else:
         st.markdown(f"""
-            <div class="assistant-message">
-                <p class="message-text">{message["content"]}</p>
+            <div class="ai-msg">
+                {message["content"]}
             </div>
         """, unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
 
-# INPUT SECTION (20%)
-st.markdown('<div class="input-section">', unsafe_allow_html=True)
-
-# Chat input
-if prompt := st.chat_input("Share your thoughts with the Loyalist..."):
+# Simple input
+if prompt := st.chat_input("Enter message"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     response = get_persona_response(prompt, st.session_state.messages)
     st.session_state.messages.append({"role": "assistant", "content": response})
     st.rerun()
-
-st.markdown('</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
