@@ -291,7 +291,7 @@ st.markdown("""
     }
     
     .stChatInput > div > div {
-        background: #ffffff !important;
+        background: #f8f9fa !important;
         border: 1px solid #d1d5db !important;
         border-radius: 16px !important;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
