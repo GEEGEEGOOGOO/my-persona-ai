@@ -82,10 +82,10 @@ st.markdown("""
     header {visibility: hidden;}
     .stDeployButton {display: none;}
     
-    /* Header (optional, can be updated) */
+    /* Claude-style header */
     .claude-header {
         background: #ffffff;
-        border-bottom: 1px solid #d1d5db;
+        border-bottom: 1px solid #e5e7eb;
         padding: 12px 24px;
         display: flex;
         justify-content: space-between;
@@ -94,6 +94,8 @@ st.markdown("""
         position: sticky;
         top: 0;
         z-index: 100;
+        /* Adjusted margin */
+        margin-bottom: 0px; 
     }
     
     .claude-title {
@@ -116,6 +118,8 @@ st.markdown("""
         border-bottom: 1px solid #e5e7eb;
         display: flex;
         gap: 8px;
+        /* Adjusted margin to bring it closer */
+        margin-top: 0px; 
     }
     
     .tab-button {
