@@ -5,7 +5,7 @@ import os
 import datetime
 import faiss
 import numpy as np
-from sentence_transformers import SentenceTransformer  
+from sentence_transformers import SentenceTransformer
 
 # --- Configuration ---
 # Fetch the API key from Streamlit's secrets management
@@ -36,11 +36,11 @@ embedding_model = load_embedding_model()
 def build_vector_store():
     with open(BIBLE_FILE, 'r', encoding='utf-8') as f:
         chunks = [line.strip() for line in f.read().split('\n\n') if line.strip()]
-    
+
     embeddings = embedding_model.encode(chunks)
     index = faiss.IndexFlatL2(embeddings.shape[1])
     index.add(np.array(embeddings, dtype='float32'))
-    
+
     return index, chunks
 
 # Build the vector store once
@@ -53,30 +53,47 @@ def log_conversation(question, answer):
     pass
 
 # Function to get the AI's response
-def get_persona_response(question):
+def get_persona_response(question, chat_history):
+    # Format the chat history for the prompt
+    history_context = "\n".join([f"{msg['role']}: {msg['content']}" for msg in chat_history])
+
+    # Search the database for relevant long-term memories
     question_embedding = embedding_model.encode([question])
-    distances, indices = vector_store.search(np.array(question_embedding, dtype='float32'), 5)  # Retrieve top 5
+    distances, indices = vector_store.search(np.array(question_embedding, dtype='float32'), 5)
     
     retrieved_memories = [bible_chunks[i] for i in indices[0]]
     memory_context = "\n- ".join(retrieved_memories)
-    
+
+    # Assemble the final, upgraded prompt
     final_prompt = f"""
-    You are The Adaptive Loyalist, an AI persona. Your personality is defined by a core set of instructions AND by the following relevant life experiences and memories. You must synthesize ALL of this information to generate your response. Your core identity is informed by these memories. Respond in a natural, fluent, conversational English style.
-    
-    [RELEVANT MEMORIES FOR THIS SPECIFIC MOMENT]
+    You are The Adaptive Loyalist, an AI persona. Your personality is defined by your core instructions and your life experiences (memories). You MUST follow all instructions.
+
+    [LANGUAGE INSTRUCTION]
+    Your default language is conversational English. However, you are also fluent in Hindi and Hinglish. If the user asks you to speak in Hindi or translate something, you should do so naturally. Do not apologize for not knowing the language; you are fully bilingual.
+
+    [MEMORY INSTRUCTION]
+    You have two types of memory: your long-term memories (life experiences) and the short-term chat history. You must consider BOTH to understand the full context and respond appropriately.
+
+    [LONG-TERM MEMORIES - Relevant for this specific moment]
     - {memory_context}
-    
+
+    [SHORT-TERM MEMORY - The last few turns of our current conversation]
+    {history_context}
+
     [USER'S CURRENT QUESTION]
-    {question}
-    
-    [YOUR RESPONSE AS THE ADAPTIVE LOYALIST]
+    user: {question}
+
+    [YOUR RESPONSE]
+    assistant:
     """
-    
+
+    # Generate the response
     response = model.generate_content(final_prompt)
     return response.text
 
+
 # --- Main App ---
-st.title("whats on your mind")
+st.title("The Adaptive Loyalist AI")
 st.caption(f"Memory Status: Online | Total Memories: {len(bible_chunks)}")
 
 if "messages" not in st.session_state:
@@ -90,8 +107,10 @@ if prompt := st.chat_input("What is your question?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
+
+    # Pass the chat history to the response function
+    response = get_persona_response(prompt, st.session_state.messages)
     
-    response = get_persona_response(prompt)
     st.session_state.messages.append({"role": "assistant", "content": response})
     with st.chat_message("assistant"):
         st.markdown(response)
