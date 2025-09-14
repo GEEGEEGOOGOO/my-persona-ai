@@ -1,25 +1,20 @@
-# Start with a specific, known-stable version of Python
+# Use an official Python runtime as a parent image
 FROM python:3.11-slim
 
-# Set the working directory
+# Set the working directory in the container
 WORKDIR /app
 
-# Copy the requirements file
-COPY requirements.txt ./
+# Copy the requirements file into the container
+COPY requirements.txt .
 
-# Install the dependencies
+# Install the Python libraries
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application files
+# Copy the rest of your application files into the container
 COPY . .
 
-# This command makes the script executable
-RUN chmod +x ./start.sh
+# Tell Docker that the container listens on port 8501
+EXPOSE 8501
 
-# Create a startup script to handle the port correctly
-# This is the most reliable way to handle the PORT variable
-RUN echo '#!/bin/sh' > ./start.sh && \
-    echo 'streamlit run webapp.py --server.port=$PORT --server.address=0.0.0.0' >> ./start.sh
-
-# Set the command to run the startup script
-CMD ["./start.sh"]
+# The command to run when the container starts
+CMD ["streamlit", "run", "webapp.py", "--server.port=8501", "--server.address=0.0.0.0"]
