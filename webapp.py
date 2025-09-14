@@ -8,110 +8,145 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 
 # --- Configuration ---
-# Fetch the API key from Streamlit's secrets management
 GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY")
-
-# This is the file containing our Character Bible chunks.
 BIBLE_FILE = "Character_Bible.txt"
-
-# This is where we will log the conversations.
 LOG_FILE = "chat_logs.txt"
 
 # --- Initialization ---
-# Configure the Gemini AI model
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-# Load the sentence transformer model for creating embeddings
 @st.cache_resource
 def load_embedding_model():
     return SentenceTransformer('all-MiniLM-L6-v2')
 
 embedding_model = load_embedding_model()
 
-# --- Functions ---
-
-# Function to build the in-memory FAISS vector store
 @st.cache_resource
 def build_vector_store():
     with open(BIBLE_FILE, 'r', encoding='utf-8') as f:
         chunks = [line.strip() for line in f.read().split('\n\n') if line.strip()]
-
     embeddings = embedding_model.encode(chunks)
     index = faiss.IndexFlatL2(embeddings.shape[1])
     index.add(np.array(embeddings, dtype='float32'))
-
     return index, chunks
 
-# Build the vector store once
 vector_store, bible_chunks = build_vector_store()
 
-# Function to log conversations (optional, creates a log file)
 def log_conversation(question, answer):
-    # This function won't work in the deployed Streamlit environment
-    # but is safe to leave in.
-    pass
+    pass  # optional logging
 
-# Function to get the AI's response
 def get_persona_response(question, chat_history):
-    # Format the chat history for the prompt
     history_context = "\n".join([f"{msg['role']}: {msg['content']}" for msg in chat_history])
-
-    # Search the database for relevant long-term memories
     question_embedding = embedding_model.encode([question])
     distances, indices = vector_store.search(np.array(question_embedding, dtype='float32'), 5)
-    
     retrieved_memories = [bible_chunks[i] for i in indices[0]]
     memory_context = "\n- ".join(retrieved_memories)
 
-    # Assemble the final, upgraded prompt
     final_prompt = f"""
-    You are The Adaptive Loyalist, an AI persona. Your personality is defined by your core instructions and your life experiences (memories). You MUST follow all instructions.
+You are The Adaptive Loyalist, an AI persona. Follow all instructions.
 
-    [LANGUAGE INSTRUCTION]
-    Your default language is conversational English. However, you are also fluent in Hindi and Hinglish. If the user asks you to speak in Hindi or translate something, you should do so naturally. Do not apologize for not knowing the language; you are fully bilingual.
+[LANGUAGE INSTRUCTION]
+Conversational English default. Fluent in Hindi/Hinglish.
 
-    [MEMORY INSTRUCTION]
-    You have two types of memory: your long-term memories (life experiences) and the short-term chat history. You must consider BOTH to understand the full context and respond appropriately.
+[MEMORY INSTRUCTION]
+Consider long-term memories and short-term chat history.
 
-    [LONG-TERM MEMORIES - Relevant for this specific moment]
-    - {memory_context}
+[LONG-TERM MEMORIES]
+- {memory_context}
 
-    [SHORT-TERM MEMORY - The last few turns of our current conversation]
-    {history_context}
+[SHORT-TERM MEMORY]
+{history_context}
 
-    [USER'S CURRENT QUESTION]
-    user: {question}
+[USER'S CURRENT QUESTION]
+user: {question}
 
-    [YOUR RESPONSE]
-    assistant:
-    """
-
-    # Generate the response
+[YOUR RESPONSE]
+assistant:
+"""
     response = model.generate_content(final_prompt)
     return response.text
 
+# --- Custom Styling ---
+st.markdown("""
+<style>
+/* Title styling */
+.custom-title {
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    padding: 15px;
+    border: 3px solid #00ff88;
+    border-radius: 12px;
+    color: #ffffff;
+    text-shadow: 2px 2px 8px rgba(0, 255, 136, 0.8);
+    box-shadow: 0px 4px 20px rgba(0, 255, 136, 0.3);
+    margin-bottom: 20px;
+}
+
+/* Chat bubbles */
+.stChatMessage.user {
+    background-color: #ff4b4b;
+    color: white;
+    padding: 12px;
+    border-radius: 15px 15px 0px 15px;
+    margin: 10px 0;
+    box-shadow: 0px 4px 10px rgba(255, 75, 75, 0.5);
+    font-size: 16px;
+}
+
+.stChatMessage.assistant {
+    background-color: #1f77ff;
+    color: white;
+    padding: 12px;
+    border-radius: 15px 15px 15px 0px;
+    margin: 10px 0;
+    box-shadow: 0px 4px 10px rgba(31, 119, 255, 0.5);
+    font-size: 16px;
+    animation: bottleflip 1s ease-in-out;
+}
+
+/* Bottle flip animation */
+@keyframes bottleflip {
+    0% { transform: rotate(0deg) translateY(0); opacity: 0.2; }
+    30% { transform: rotate(720deg) translateY(-40px); opacity: 0.6; }
+    60% { transform: rotate(1440deg) translateY(0px); opacity: 0.9; }
+    100% { transform: rotate(2160deg) translateY(0); opacity: 1; }
+}
+</style>
+""", unsafe_allow_html=True)
 
 # --- Main App ---
-st.title("Whats buggin You")
+st.markdown('<h1 class="custom-title">Whats buggin You</h1>', unsafe_allow_html=True)
 st.caption(f"Memory Status: Online | Total Memories: {len(bible_chunks)}")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
+# Display messages with styling
 for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+    role_class = "user" if message["role"] == "user" else "assistant"
+    st.markdown(f"""
+    <div class="stChatMessage {role_class}">
+        {message["content"]}
+    </div>
+    """, unsafe_allow_html=True)
 
+# Chat input
 if prompt := st.chat_input("What is your question?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
+    # Display user message
+    st.markdown(f"""
+    <div class="stChatMessage user">
+        {prompt}
+    </div>
+    """, unsafe_allow_html=True)
 
-    # Pass the chat history to the response function
-    response = get_persona_response(prompt, st.session_state.messages)
-    
-    st.session_state.messages.append({"role": "assistant", "content": response})
-    with st.chat_message("assistant"):
-        st.markdown(response)
-
+    # Generate AI response
+    response_text = get_persona_response(prompt, st.session_state.messages)
+    st.session_state.messages.append({"role": "assistant", "content": response_text})
+    st.markdown(f"""
+    <div class="stChatMessage assistant">
+        {response_text}
+    </div>
+    """, unsafe_allow_html=True)
