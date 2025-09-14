@@ -442,3 +442,6 @@ if prompt := st.chat_input("Message Loyalist..."):
     st.rerun()
 st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
+
+# Close the main content div
+st.markdown('</div>', unsafe_allow_html=True)
