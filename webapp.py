@@ -62,21 +62,19 @@ def get_persona_response(question, chat_history):
     response = model.generate_content(final_prompt)
     return response.text
 
-# --- AMC x Ghost of Tsushima Inspired CSS ---
+# --- Clean Layout CSS ---
 st.markdown("""
     <style>
-    /* Import elegant fonts */
+    /* Import fonts */
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;700&family=Inter:wght@300;400;500&display=swap');
     
-    /* Global app styling with rich cinematic background */
+    /* Global app styling */
     .stApp {
-        background: 
-            radial-gradient(circle at 20% 80%, rgba(220, 38, 38, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 20%, rgba(251, 191, 36, 0.05) 0%, transparent 50%),
-            linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 25%, #0a0a0a 50%, #1a1716 75%, #0f0f0f 100%);
+        background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 25%, #0a0a0a 50%, #1a1716 75%, #0f0f0f 100%);
         color: #f5f5f5;
         font-family: 'Inter', sans-serif;
-        min-height: 100vh;
+        height: 100vh;
+        overflow: hidden;
     }
     
     /* Hide streamlit elements */
@@ -85,69 +83,47 @@ st.markdown("""
     header {visibility: hidden;}
     .stDeployButton {display: none;}
     
-    /* Cinematic header with Japanese-inspired elements */
-    .cinematic-header {
+    /* Main container with 3:5:2 layout */
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+    }
+    
+    /* Title Section - 30% height */
+    .title-section {
+        height: 30vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.8);
+        border-bottom: 1px solid #333;
         position: relative;
-        background: linear-gradient(180deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 100%);
-        border-bottom: 2px solid #d4af37;
-        padding: 30px 0;
-        margin-bottom: 20px;
-        overflow: hidden;
     }
     
-    .cinematic-header::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, #d4af37, #dc2626, #d4af37, transparent);
-        animation: shimmer 3s ease-in-out infinite;
-    }
-    
-    @keyframes shimmer {
-        0%, 100% { opacity: 0.3; }
-        50% { opacity: 1; }
-    }
-    
-    /* Main title styling */
     .main-title {
         font-family: 'Playfair Display', serif;
         font-size: 48px;
         font-weight: 300;
-        text-align: center;
-        color: #f5f5f5;
+        color: #ffffff;
         margin: 0;
         letter-spacing: 3px;
-        text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-        position: relative;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
     }
     
-    .main-title::after {
-        content: '';
-        position: absolute;
-        bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100px;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, #d4af37, transparent);
-    }
-    
-    /* Status bar with AMC-style design */
-    .status-container {
+    .status-bar {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background: rgba(0, 0, 0, 0.6);
+        background: rgba(0, 0, 0, 0.9);
         border: 1px solid #333;
         border-left: 4px solid #dc2626;
         padding: 12px 24px;
-        margin: 20px 0;
+        margin-top: 20px;
+        width: 80%;
         font-size: 13px;
         color: #cccccc;
-        backdrop-filter: blur(10px);
     }
     
     .status-left, .status-right {
@@ -169,28 +145,28 @@ st.markdown("""
         50% { opacity: 1; }
     }
     
-    /* Chat container with Ghost of Tsushima inspiration */
-    .chat-container {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 0 20px;
+    /* Interaction Section - 50% height */
+    .interaction-section {
+        height: 50vh;
+        padding: 20px;
+        overflow-y: auto;
+        background: rgba(0, 0, 0, 0.3);
     }
     
-    /* User message - AMC red theme */
+    /* Message styling - Clean and aligned */
+    .message-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
     .user-message {
-        background: linear-gradient(135deg, rgba(220, 38, 38, 0.15) 0%, rgba(0, 0, 0, 0.8) 100%);
+        background: rgba(220, 38, 38, 0.1);
         border: 1px solid rgba(220, 38, 38, 0.3);
         border-left: 4px solid #dc2626;
-        margin: 16px 0 16px 60px;
+        margin: 16px 0;
         padding: 20px 24px;
         position: relative;
-        backdrop-filter: blur(5px);
-        transition: all 0.3s ease;
-    }
-    
-    .user-message:hover {
-        border-left-color: #fbbf24;
-        transform: translateX(-2px);
+        color: #ffffff;
     }
     
     .user-message::before {
@@ -204,24 +180,16 @@ st.markdown("""
         font-size: 10px;
         font-weight: 500;
         letter-spacing: 1px;
-        font-family: 'Inter', sans-serif;
     }
     
-    /* Assistant message - Golden/amber theme */
     .assistant-message {
-        background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(0, 0, 0, 0.8) 100%);
-        border: 1px solid rgba(212, 175, 55, 0.3);
-        border-left: 4px solid #d4af37;
-        margin: 16px 60px 16px 0;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-left: 4px solid #ffffff;
+        margin: 16px 0;
         padding: 20px 24px;
         position: relative;
-        backdrop-filter: blur(5px);
-        transition: all 0.3s ease;
-    }
-    
-    .assistant-message:hover {
-        border-left-color: #dc2626;
-        transform: translateX(2px);
+        color: #ffffff;
     }
     
     .assistant-message::before {
@@ -229,35 +197,50 @@ st.markdown("""
         position: absolute;
         top: -1px;
         left: 16px;
-        background: #d4af37;
+        background: #ffffff;
         color: #000000;
         padding: 4px 12px;
         font-size: 10px;
         font-weight: 500;
         letter-spacing: 1px;
-        font-family: 'Inter', sans-serif;
     }
     
-    /* Message text styling */
-    .user-message p, .assistant-message p {
+    .message-text {
         margin: 0;
         line-height: 1.6;
         font-size: 15px;
-        color: #f5f5f5;
     }
     
-    /* Input styling */
+    /* Input Section - 20% height */
+    .input-section {
+        height: 20vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.8);
+        border-top: 1px solid #333;
+        padding: 20px;
+    }
+    
+    .stChatInput {
+        width: 100% !important;
+        max-width: 800px !important;
+    }
+    
+    .stChatInput > div {
+        width: 100% !important;
+    }
+    
     .stChatInput > div > div {
-        background: rgba(0, 0, 0, 0.7) !important;
+        background: rgba(0, 0, 0, 0.9) !important;
         border: 1px solid #333 !important;
-        border-radius: 0 !important;
         backdrop-filter: blur(10px) !important;
     }
     
     .stChatInput > div > div > input {
         background: transparent !important;
         border: none !important;
-        color: #f5f5f5 !important;
+        color: #ffffff !important;
         font-family: 'Inter', sans-serif !important;
         font-size: 15px !important;
         padding: 16px 20px !important;
@@ -270,45 +253,10 @@ st.markdown("""
     
     .stChatInput > div > div > input:focus {
         outline: none !important;
-        box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.5) !important;
+        box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3) !important;
     }
     
-    /* Decorative elements inspired by Ghost of Tsushima */
-    .decorative-element {
-        position: fixed;
-        pointer-events: none;
-        z-index: -1;
-        opacity: 0.1;
-    }
-    
-    .deco-1 {
-        top: 15%;
-        right: 5%;
-        width: 150px;
-        height: 150px;
-        border: 1px solid #d4af37;
-        border-radius: 50%;
-        background: radial-gradient(circle, transparent 40%, rgba(212, 175, 55, 0.05) 100%);
-    }
-    
-    .deco-2 {
-        bottom: 20%;
-        left: 3%;
-        width: 200px;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.3), transparent);
-        transform: rotate(-15deg);
-    }
-    
-    .deco-3 {
-        top: 40%;
-        right: 1%;
-        width: 2px;
-        height: 300px;
-        background: linear-gradient(180deg, transparent, rgba(212, 175, 55, 0.2), transparent);
-    }
-    
-    /* Scrollbar styling - BOXY */
+    /* Scrollbar styling */
     ::-webkit-scrollbar {
         width: 8px;
     }
@@ -318,91 +266,73 @@ st.markdown("""
     }
     
     ::-webkit-scrollbar-thumb {
-        background: linear-gradient(180deg, #dc2626, #d4af37);
+        background: linear-gradient(180deg, #dc2626, #ffffff);
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(180deg, #d4af37, #dc2626);
+        background: linear-gradient(180deg, #ffffff, #dc2626);
     }
     </style>
-""", unsafe_allow_html=True)
-
-# --- Decorative background elements ---
-st.markdown("""
-    <div class="decorative-element deco-1"></div>
-    <div class="decorative-element deco-2"></div>
-    <div class="decorative-element deco-3"></div>
-""", unsafe_allow_html=True)
-
-# --- Cinematic Header ---
-st.markdown("""
-    <div class="cinematic-header">
-        <h1 class="main-title">The Adaptive Loyalist</h1>
-    </div>
-""", unsafe_allow_html=True)
-
-# --- Status Bar ---
-st.markdown(f"""
-    <div class="status-container">
-        <div class="status-left">
-            <div style="display: flex; align-items: center;">
-                <div class="status-indicator"></div>
-                <span>NEURAL INTERFACE ACTIVE</span>
-            </div>
-            <span>MEMORY BANKS: {len(bible_chunks)}</span>
-        </div>
-        <div class="status-right">
-            <span>SYSTEM STATUS: ONLINE</span>
-            <span>RESPONSE MODE: ADAPTIVE</span>
-        </div>
-    </div>
 """, unsafe_allow_html=True)
 
 # Initialize session state
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Chat container
-st.markdown('<div class="chat-container">', unsafe_allow_html=True)
+# Create the 3-section layout
+st.markdown('<div class="main-container">', unsafe_allow_html=True)
 
-# Render past messages
+# TITLE SECTION (30%)
+st.markdown("""
+    <div class="title-section">
+        <h1 class="main-title">The Adaptive Loyalist</h1>
+        <div class="status-bar">
+            <div class="status-left">
+                <div style="display: flex; align-items: center;">
+                    <div class="status-indicator"></div>
+                    <span>NEURAL INTERFACE ACTIVE</span>
+                </div>
+                <span>MEMORY BANKS: """ + str(len(bible_chunks)) + """</span>
+            </div>
+            <div class="status-right">
+                <span>SYSTEM STATUS: ONLINE</span>
+                <span>RESPONSE MODE: ADAPTIVE</span>
+            </div>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
+
+# INTERACTION SECTION (50%)
+st.markdown('<div class="interaction-section">', unsafe_allow_html=True)
+st.markdown('<div class="message-container">', unsafe_allow_html=True)
+
+# Render messages
 for message in st.session_state.messages:
     if message["role"] == "user":
         st.markdown(f"""
             <div class="user-message">
-                <p>{message["content"]}</p>
+                <p class="message-text">{message["content"]}</p>
             </div>
         """, unsafe_allow_html=True)
     else:
         st.markdown(f"""
             <div class="assistant-message">
-                <p>{message["content"]}</p>
+                <p class="message-text">{message["content"]}</p>
             </div>
         """, unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
+# INPUT SECTION (20%)
+st.markdown('<div class="input-section">', unsafe_allow_html=True)
 
 # Chat input
 if prompt := st.chat_input("Share your thoughts with the Loyalist..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
-    
-    # Display new user message
-    st.markdown(f"""
-        <div class="chat-container">
-            <div class="user-message">
-                <p>{prompt}</p>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-
-    # Get and display response
     response = get_persona_response(prompt, st.session_state.messages)
     st.session_state.messages.append({"role": "assistant", "content": response})
-    
-    st.markdown(f"""
-        <div class="chat-container">
-            <div class="assistant-message">
-                <p>{response}</p>
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
+    st.rerun()
+
+st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
