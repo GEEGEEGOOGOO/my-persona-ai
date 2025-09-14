@@ -43,8 +43,8 @@ def get_persona_response(question, chat_history):
     memory_context = "\n- ".join(retrieved_memories)
 
     final_prompt = f"""
-    You are The Adaptive Loyalist, an AI persona. 
-    Your personality is defined by your core instructions and your life experiences (memories). 
+    You are The Adaptive Loyalist, an AI persona.
+    Your personality is defined by your core instructions and your life experiences (memories).
 
     [LONG-TERM MEMORIES]
     - {memory_context}
@@ -62,16 +62,16 @@ def get_persona_response(question, chat_history):
     response = model.generate_content(final_prompt)
     return response.text
 
-# --- Claude AI Style CSS ---
+# --- Grey/Dark Grey CSS ---
 st.markdown("""
     <style>
     /* Claude-inspired fonts */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
-    /* Claude-style app background */
+    /* Grey/Dark Grey app background */
     .stApp {
-        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-        color: #2c3e50;
+        background: linear-gradient(135deg, #f0f2f5 0%, #e0e2e5 100%);
+        color: #1f2937;
         font-family: 'Inter', sans-serif;
         font-size: 14px;
     }
@@ -82,10 +82,10 @@ st.markdown("""
     header {visibility: hidden;}
     .stDeployButton {display: none;}
     
-    /* Claude-style header */
+    /* Header (optional, can be updated) */
     .claude-header {
         background: #ffffff;
-        border-bottom: 1px solid #e5e7eb;
+        border-bottom: 1px solid #d1d5db;
         padding: 12px 24px;
         display: flex;
         justify-content: space-between;
@@ -218,14 +218,14 @@ st.markdown("""
         min-height: calc(100vh - 200px);
     }
     
-    /* Claude-style message bubbles */
+    /* --- The changed message bubbles --- */
     .user-message {
-        background: #f3f4f6;
-        border: 1px solid #e5e7eb;
+        background: #4a4a4a; /* Dark Grey for user messages */
+        border: 1px solid #3d3d3d;
         border-radius: 16px;
         padding: 16px 20px;
-        margin: 16px 0 16px 80px;
-        color: #1f2937;
+        margin: 16px 80px 16px 0; /* Changed margin to align right */
+        color: #ffffff;
         position: relative;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     }
@@ -235,7 +235,7 @@ st.markdown("""
         position: absolute;
         top: -8px;
         right: 16px;
-        background: #3b82f6;
+        background: #808080; /* Grey label */
         color: #ffffff;
         padding: 4px 8px;
         font-size: 11px;
@@ -244,12 +244,12 @@ st.markdown("""
     }
     
     .ai-message {
-        background: #ffffff;
-        border: 1px solid #e5e7eb;
+        background: #808080; /* Grey for AI messages */
+        border: 1px solid #737373;
         border-radius: 16px;
         padding: 16px 20px;
-        margin: 16px 80px 16px 0;
-        color: #1f2937;
+        margin: 16px 0 16px 80px; /* Changed margin to align left */
+        color: #ffffff;
         position: relative;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     }
@@ -259,7 +259,7 @@ st.markdown("""
         position: absolute;
         top: -8px;
         left: 16px;
-        background: #10b981;
+        background: #4a4a4a; /* Dark grey label */
         color: #ffffff;
         padding: 4px 8px;
         font-size: 11px;
