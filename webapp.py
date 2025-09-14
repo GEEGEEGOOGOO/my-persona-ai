@@ -62,7 +62,7 @@ def get_persona_response(question, chat_history):
     response = model.generate_content(final_prompt)
     return response.text
 
-# --- Grey/Dark Grey CSS ---
+# --- Grey/Dark Grey CSS with tree design ---
 st.markdown("""
     <style>
     /* Claude-inspired fonts */
@@ -94,7 +94,6 @@ st.markdown("""
         position: sticky;
         top: 0;
         z-index: 100;
-        /* Adjusted margin */
         margin-bottom: 0px; 
     }
     
@@ -118,7 +117,6 @@ st.markdown("""
         border-bottom: 1px solid #e5e7eb;
         display: flex;
         gap: 8px;
-        /* Adjusted margin to bring it closer */
         margin-top: 0px; 
     }
     
@@ -220,8 +218,35 @@ st.markdown("""
         max-width: 900px;
         margin: 0 auto;
         min-height: calc(100vh - 200px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
     
+    /* Tree design CSS */
+    .six-feet-under-tree {
+        text-align: center;
+        color: #6b7280;
+        font-size: 1.2em;
+        font-weight: 500;
+        margin-top: -100px; /* Adjust to center vertically */
+        opacity: 0.7;
+    }
+
+    .six-feet-under-tree h3 {
+        margin-bottom: 5px;
+        color: #374151;
+    }
+    
+    .six-feet-under-tree pre {
+        font-family: monospace;
+        line-height: 0.8;
+        font-size: 1em;
+        color: #9ca3af;
+        margin-top: 0;
+    }
+
     /* --- The changed message bubbles --- */
     .user-message {
         background: #4a4a4a; /* Dark Grey for user messages */
@@ -232,6 +257,7 @@ st.markdown("""
         color: #ffffff;
         position: relative;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        align-self: flex-end;
     }
     
     .user-message::before {
@@ -256,6 +282,7 @@ st.markdown("""
         color: #ffffff;
         position: relative;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        align-self: flex-start;
     }
     
     .ai-message::before {
@@ -417,10 +444,24 @@ if "messages" not in st.session_state:
 # Content area
 st.markdown('<div class="content-area">', unsafe_allow_html=True)
 
-# Add this block to display a welcome message if the chat is empty
+# Add this block to display the tree if the chat is empty
 if not st.session_state.messages:
     st.markdown(f"""
-        <div class="ai-message">
+        <div class="six-feet-under-tree">
+            <h3>Start a new conversation</h3>
+            <pre>
+            . .. ,-''-~-.
+            `. `'. ,-'`
+                `-. `-.
+                    `-. `-.
+                        `-. `.
+                            `.\
+                            |
+            </pre>
+        </div>
+    """, unsafe_allow_html=True)
+    st.markdown(f"""
+        <div class="ai-message" style="margin-top: 50px;">
             <p class="message-text">Hello! I'm The Adaptive Loyalist. How can I assist you today?</p>
         </div>
     """, unsafe_allow_html=True)
