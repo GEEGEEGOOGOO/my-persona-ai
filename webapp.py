@@ -70,60 +70,67 @@ assistant:
 # --- Custom Styling ---
 st.markdown("""
 <style>
+/* Page container styling */
+body {
+    background-color: #f7f7f7; /* soft background */
+}
+
+.main-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
 /* Title styling */
 .custom-title {
-    font-size: 48px;
-    font-weight: bold;
+    font-size: 42px;
+    font-weight: 700;
     text-align: center;
-    padding: 15px;
-    border: 3px solid #00ff88;
-    border-radius: 12px;
-    color: #ffffff;
-    text-shadow: 2px 2px 8px rgba(0, 255, 136, 0.8);
-    box-shadow: 0px 4px 20px rgba(0, 255, 136, 0.3);
-    margin-bottom: 20px;
+    color: #111111;
+    margin-bottom: 15px;
+    text-shadow: 0px 1px 3px rgba(0,0,0,0.1);
 }
 
 /* Chat bubbles */
 .stChatMessage.user {
-    background-color: #ff4b4b;
-    color: white;
-    padding: 12px;
-    border-radius: 15px 15px 0px 15px;
+    background-color: #e0e0e0;
+    color: #111111;
+    padding: 12px 15px;
+    border-radius: 18px 18px 0px 18px;
     margin: 10px 0;
-    box-shadow: 0px 4px 10px rgba(255, 75, 75, 0.5);
     font-size: 16px;
+    max-width: 80%;
+    word-wrap: break-word;
 }
 
 .stChatMessage.assistant {
-    background-color: #1f77ff;
-    color: white;
-    padding: 12px;
-    border-radius: 15px 15px 15px 0px;
+    background-color: #d1eaff;
+    color: #111111;
+    padding: 12px 15px;
+    border-radius: 18px 18px 18px 0px;
     margin: 10px 0;
-    box-shadow: 0px 4px 10px rgba(31, 119, 255, 0.5);
     font-size: 16px;
-    animation: bottleflip 1s ease-in-out;
-}
-
-/* Bottle flip animation */
-@keyframes bottleflip {
-    0% { transform: rotate(0deg) translateY(0); opacity: 0.2; }
-    30% { transform: rotate(720deg) translateY(-40px); opacity: 0.6; }
-    60% { transform: rotate(1440deg) translateY(0px); opacity: 0.9; }
-    100% { transform: rotate(2160deg) translateY(0); opacity: 1; }
+    max-width: 80%;
+    word-wrap: break-word;
+    transition: all 0.3s ease-in-out; /* subtle smooth appearance */
 }
 </style>
 """, unsafe_allow_html=True)
 
-# --- Main App ---
+# --- Main Container ---
+st.markdown('<div class="main-container">', unsafe_allow_html=True)
+
+# Title
 st.markdown('<h1 class="custom-title">Whats buggin You</h1>', unsafe_allow_html=True)
 st.caption(f"Memory Status: Online | Total Memories: {len(bible_chunks)}")
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display messages with styling
+# Display messages
 for message in st.session_state.messages:
     role_class = "user" if message["role"] == "user" else "assistant"
     st.markdown(f"""
@@ -135,14 +142,12 @@ for message in st.session_state.messages:
 # Chat input
 if prompt := st.chat_input("What is your question?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
-    # Display user message
     st.markdown(f"""
     <div class="stChatMessage user">
         {prompt}
     </div>
     """, unsafe_allow_html=True)
 
-    # Generate AI response
     response_text = get_persona_response(prompt, st.session_state.messages)
     st.session_state.messages.append({"role": "assistant", "content": response_text})
     st.markdown(f"""
@@ -150,3 +155,5 @@ if prompt := st.chat_input("What is your question?"):
         {response_text}
     </div>
     """, unsafe_allow_html=True)
+
+st.markdown('</div>', unsafe_allow_html=True)  # close main container
