@@ -65,10 +65,11 @@ def get_persona_response(question):
     [RELEVANT MEMORIES FOR THIS SPECIFIC MOMENT]
     - {memory_context}
 
-    [USER'S CURRENT QUESTION]
-    {question}
+    [USER'S QUESTION]
+    user: {question}
 
-    [YOUR HINGLISH RESPONSE AS THE ADAPTIVE LOYALIST]
+    [YOUR RESPONSE]
+    assistant:
     """
 
     response = model.generate_content(final_prompt)
@@ -94,3 +95,4 @@ if prompt := st.chat_input("What is your question?"):
     st.session_state.messages.append({"role": "assistant", "content": response})
     with st.chat_message("assistant"):
         st.markdown(response)
+
