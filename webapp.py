@@ -397,3 +397,58 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("""
+    <div class="tab-navigation">
+        <button class="tab-button active">Chat</button>
+        <button class="tab-button">History</button>
+        <button class="tab-button">Memory Banks</button>
+        <button class="tab-button">Analytics</button>
+    </div>
+""", unsafe_allow_html=True)
+
+# Initialize session state
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Content area
+st.markdown('<div class="content-area">', unsafe_allow_html=True)
+
+# Display welcome message if no chat history
+if not st.session_state.messages:
+    st.markdown(f"""
+        <div class="ai-message" style="margin-top: 50px;">
+            <p class="message-text">Hello! I'm The Adaptive Loyalist. How can I assist you today?</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+# Display messages as chat bubbles
+for message in st.session_state.messages:
+    if message["role"] == "user":
+        st.markdown(f"""
+            <div class="user-message">
+                <p class="message-text">{message["content"]}</p>
+            </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"""
+            <div class="ai-message">
+                <p class="message-text">{message["content"]}</p>
+            </div>
+        """, unsafe_allow_html=True)
+
+# Spacer for fixed input
+st.markdown('<div class="spacer"></div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Chat input container
+st.markdown('<div class="input-container">', unsafe_allow_html=True)
+st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
+if prompt := st.chat_input("Message Loyalist..."):
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    response = get_persona_response(prompt, st.session_state.messages)
+    st.session_state.messages.append({"role": "assistant", "content": response})
+    st.rerun()
+st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Close the main content div
+st.markdown('</div>', unsafe_allow_html=True)
