@@ -12,7 +12,7 @@ st.markdown("""
 <style>
 /* This targets the main container of the Streamlit app */
 [data-testid="stAppViewContainer"] > .main {
-    background-color: #262626; /* This is a dark charcoal color */
+    background-color: #5B5B5B; /* This is a grey color */
 }
 
 /* This changes the main text color to white for better readability */
@@ -125,3 +125,4 @@ if prompt := st.chat_input("What is your question?"):
     st.session_state.messages.append({"role": "assistant", "content": response})
     with st.chat_message("assistant"):
         st.markdown(response)
+
