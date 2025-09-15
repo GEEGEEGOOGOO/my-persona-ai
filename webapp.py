@@ -7,21 +7,6 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-# --- Custom CSS for Theming ---
-st.markdown("""
-<style>
-/* This targets the main container of the Streamlit app */
-[data-testid="stAppViewContainer"] > .main {
-    background-color: white; /* This is a grey color */
-}
-
-/* This changes the main text color to white for better readability */
-.stApp {
-    color: white;
-}
-</style>
-""", unsafe_allow_html=True)
-
 
 # --- Configuration ---
 # Fetch the API key from Streamlit's secrets management
@@ -125,5 +110,6 @@ if prompt := st.chat_input("What is your question?"):
     st.session_state.messages.append({"role": "assistant", "content": response})
     with st.chat_message("assistant"):
         st.markdown(response)
+
 
 
