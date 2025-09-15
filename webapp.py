@@ -7,9 +7,24 @@ import faiss
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
+# --- Custom CSS for Theming ---
+st.markdown("""
+<style>
+/* This targets the main container of the Streamlit app */
+[data-testid="stAppViewContainer"] > .main {
+    background-color: #262626; /* This is a dark charcoal color */
+}
+
+/* This changes the main text color to white for better readability */
+.stApp {
+    color: white;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
 # --- Configuration ---
 # Fetch the API key from Streamlit's secrets management
-# Make sure to set this in your Streamlit Cloud settings
 GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY")
 
 # This is the file containing our Character Bible chunks.
@@ -35,10 +50,7 @@ def build_vector_store():
     with open(BIBLE_FILE, 'r', encoding='utf-8') as f:
         chunks = [line.strip() for line in f.read().split('\n\n') if line.strip()]
 
-    # Create vector embeddings for each chunk
     embeddings = embedding_model.encode(chunks)
-    
-    # Create a FAISS index and add the embeddings
     index = faiss.IndexFlatL2(embeddings.shape[1])
     index.add(np.array(embeddings, dtype='float32'))
 
@@ -67,49 +79,4 @@ def get_persona_response(question, chat_history):
     Your default language is conversational English. However, you are also fluent in Hindi and Hinglish. If the user asks you to speak in Hindi or translate something, you should do so naturally. Do not apologize for not knowing the language; you are fully bilingual.
 
     [MEMORY INSTRUCTION]
-    You have two types of memory: your long-term memories (life experiences) and the short-term chat history. You must consider BOTH to understand the full context and respond appropriately.
-
-    [LONG-TERM MEMORIES - Relevant for this specific moment]
-    - {memory_context}
-
-    [SHORT-TERM MEMORY - The last few turns of our current conversation]
-    {history_context}
-
-    [USER'S CURRENT QUESTION]
-    user: {question}
-
-    [YOUR RESPONSE]
-    assistant:
-    """
-
-    # Generate the response from the Gemini model
-    response = model.generate_content(final_prompt)
-    return response.text
-
-# --- Main App Interface ---
-st.title("The Adaptive Loyalist AI")
-st.caption(f"Memory Status: Online | Total Memories: {len(bible_chunks)}")
-
-# Initialize chat history in Streamlit's session state
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# Display past chat messages
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-# Get new user input
-if prompt := st.chat_input("What is your question?"):
-    # Add user message to history and display it
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    # Get the AI's response
-    response = get_persona_response(prompt, st.session_state.messages)
-    
-    # Add AI response to history and display it
-    st.session_state.messages.append({"role": "assistant", "content": response})
-    with st.chat_message("assistant"):
-        st.markdown(response)
+    You have two types of memory: your long-term memories (life experiences) and the short-term chat history. You must
