@@ -62,13 +62,10 @@ def get_persona_response(question, chat_history):
     response = model.generate_content(final_prompt)
     return response.text
 
-# --- Grey/Dark Grey CSS with tree design ---
+# --- CSS Styling ---
 st.markdown("""
     <style>
-    /* Claude-inspired fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    /* Grey/Dark Grey app background */
+    /* Overall app background (light grey) */
     .stApp {
         background: linear-gradient(135deg, #f0f2f5 0%, #e0e2e5 100%);
         color: #1f2937;
@@ -82,7 +79,7 @@ st.markdown("""
     header {visibility: hidden;}
     .stDeployButton {display: none;}
     
-    /* Claude-style header */
+    /* Header container */
     .claude-header {
         background: #ffffff;
         border-bottom: 1px solid #e5e7eb;
@@ -90,11 +87,11 @@ st.markdown("""
         display: flex;
         justify-content: space-between;
         align-items: center;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        box-shadow: none;
         position: sticky;
         top: 0;
         z-index: 100;
-        margin-bottom: 0px; 
+        margin-bottom: 0; 
     }
     
     .claude-title {
@@ -117,14 +114,14 @@ st.markdown("""
         border-bottom: 1px solid #e5e7eb;
         display: flex;
         gap: 8px;
-        margin-top: 0px; 
+        margin-top: 0; 
     }
     
     .tab-button {
         background: transparent;
         border: none;
         padding: 8px 16px;
-        border-radius: 8px;
+        border-radius: 0;
         color: #6b7280;
         font-size: 14px;
         font-weight: 500;
@@ -135,7 +132,7 @@ st.markdown("""
     .tab-button.active {
         background: #ffffff;
         color: #1f2937;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        box-shadow: none;
     }
     
     .tab-button:hover {
@@ -152,7 +149,7 @@ st.markdown("""
     .settings-button {
         background: #f3f4f6;
         border: 1px solid #d1d5db;
-        border-radius: 8px;
+        border-radius: 0;
         padding: 8px 12px;
         color: #374151;
         font-size: 14px;
@@ -174,8 +171,8 @@ st.markdown("""
         margin-top: 4px;
         background: #ffffff;
         border: 1px solid #d1d5db;
-        border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        border-radius: 0;
+        box-shadow: none;
         min-width: 200px;
         z-index: 1000;
         opacity: 0;
@@ -205,59 +202,32 @@ st.markdown("""
     
     .dropdown-item:last-child {
         border-bottom: none;
-        border-radius: 0 0 12px 12px;
+        border-radius: 0;
     }
     
     .dropdown-item:first-child {
-        border-radius: 12px 12px 0 0;
+        border-radius: 0;
     }
     
-    /* Main content area */
+    /* The chat area background (charcoal black) */
     .content-area {
+        background: #212121;
         padding: 20px 24px;
         max-width: 900px;
         margin: 0 auto;
         min-height: calc(100vh - 200px);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    /* Tree design CSS */
-    .six-feet-under-tree {
-        text-align: center;
-        color: #6b7280;
-        font-size: 1.2em;
-        font-weight: 500;
-        margin-top: -100px; /* Adjust to center vertically */
-        opacity: 0.7;
     }
 
-    .six-feet-under-tree h3 {
-        margin-bottom: 5px;
-        color: #374151;
-    }
-    
-    .six-feet-under-tree pre {
-        font-family: monospace;
-        line-height: 0.8;
-        font-size: 1em;
-        color: #9ca3af;
-        margin-top: 0;
-    }
-
-    /* --- The changed message bubbles --- */
+    /* Message bubbles */
     .user-message {
-        background: #4a4a4a; /* Dark Grey for user messages */
-        border: 1px solid #3d3d3d;
+        background: #4a4a4a;
+        border: 1px solid #5a5a5a;
         border-radius: 16px;
         padding: 16px 20px;
-        margin: 16px 80px 16px 0; /* Changed margin to align right */
-        color: #ffffff;
+        margin: 16px 80px 16px 0;
+        color: #f0f2f5;
         position: relative;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        align-self: flex-end;
     }
     
     .user-message::before {
@@ -265,8 +235,8 @@ st.markdown("""
         position: absolute;
         top: -8px;
         right: 16px;
-        background: #808080; /* Grey label */
-        color: #ffffff;
+        background: #333333;
+        color: #f0f2f5;
         padding: 4px 8px;
         font-size: 11px;
         font-weight: 600;
@@ -274,15 +244,14 @@ st.markdown("""
     }
     
     .ai-message {
-        background: #808080; /* Grey for AI messages */
-        border: 1px solid #737373;
+        background: #6a6a6a;
+        border: 1px solid #7a7a7a;
         border-radius: 16px;
         padding: 16px 20px;
-        margin: 16px 0 16px 80px; /* Changed margin to align left */
-        color: #ffffff;
+        margin: 16px 0 16px 80px;
+        color: #f0f2f5;
         position: relative;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        align-self: flex-start;
     }
     
     .ai-message::before {
@@ -290,8 +259,8 @@ st.markdown("""
         position: absolute;
         top: -8px;
         left: 16px;
-        background: #4a4a4a; /* Dark grey label */
-        color: #ffffff;
+        background: #555555;
+        color: #f0f2f5;
         padding: 4px 8px;
         font-size: 11px;
         font-weight: 600;
@@ -304,7 +273,7 @@ st.markdown("""
         font-size: 15px;
     }
     
-    /* Claude-style input */
+    /* Chat input container */
     .input-container {
         position: fixed;
         bottom: 0;
@@ -324,14 +293,14 @@ st.markdown("""
     .stChatInput > div > div {
         background: #f8f9fa !important;
         border: 1px solid #d1d5db !important;
-        border-radius: 16px !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
         transition: all 0.2s ease !important;
     }
     
     .stChatInput > div > div:hover {
         border-color: #9ca3af !important;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15) !important;
+        box-shadow: none !important;
     }
     
     .stChatInput > div > div > input {
@@ -341,7 +310,7 @@ st.markdown("""
         font-family: 'Inter', sans-serif !important;
         font-size: 15px !important;
         padding: 16px 20px !important;
-        border-radius: 16px !important;
+        border-radius: 0 !important;
     }
     
     .stChatInput > div > div > input::placeholder {
@@ -350,10 +319,10 @@ st.markdown("""
     
     .stChatInput > div > div > input:focus {
         outline: none !important;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+        box-shadow: none !important;
     }
     
-    /* Claude-style scrollbar */
+    /* Scrollbar */
     ::-webkit-scrollbar {
         width: 6px;
     }
@@ -404,7 +373,7 @@ st.markdown("""
     </script>
 """, unsafe_allow_html=True)
 
-# Claude-style header
+# Main app structure
 st.markdown("""
     <div class="claude-header">
         <h1 class="claude-title">The Adaptive Loyalist</h1>
@@ -427,74 +396,4 @@ st.markdown("""
     </div>
 """, unsafe_allow_html=True)
 
-# Tab navigation
 st.markdown("""
-    <div class="tab-navigation">
-        <button class="tab-button active">Chat</button>
-        <button class="tab-button">History</button>
-        <button class="tab-button">Memory Banks</button>
-        <button class="tab-button">Analytics</button>
-    </div>
-""", unsafe_allow_html=True)
-
-# Initialize session state
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# Content area
-st.markdown('<div class="content-area">', unsafe_allow_html=True)
-
-# Add this block to display the tree if the chat is empty
-if not st.session_state.messages:
-    st.markdown(f"""
-        <div class="six-feet-under-tree">
-            <h3>Start a new conversation</h3>
-            <pre>
-            . .. ,-''-~-.
-            `. `'. ,-'`
-                `-. `-.
-                    `-. `-.
-                        `-. `.
-                            `.\
-                            |
-            </pre>
-        </div>
-    """, unsafe_allow_html=True)
-    st.markdown(f"""
-        <div class="ai-message" style="margin-top: 50px;">
-            <p class="message-text">Hello! I'm The Adaptive Loyalist. How can I assist you today?</p>
-        </div>
-    """, unsafe_allow_html=True)
-
-# Display messages as Claude-style bubbles
-for message in st.session_state.messages:
-    if message["role"] == "user":
-        st.markdown(f"""
-            <div class="user-message">
-                <p class="message-text">{message["content"]}</p>
-            </div>
-        """, unsafe_allow_html=True)
-    else:
-        st.markdown(f"""
-            <div class="ai-message">
-                <p class="message-text">{message["content"]}</p>
-            </div>
-        """, unsafe_allow_html=True)
-
-# Spacer for fixed input
-st.markdown('<div class="spacer"></div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
-
-# Claude-style input
-st.markdown('<div class="input-container">', unsafe_allow_html=True)
-st.markdown('<div class="input-wrapper">', unsafe_allow_html=True)
-if prompt := st.chat_input("Message Loyalist..."):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    response = get_persona_response(prompt, st.session_state.messages)
-    st.session_state.messages.append({"role": "assistant", "content": response})
-    st.rerun()
-st.markdown('</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)
-
-# Close the main content div
-st.markdown('</div>', unsafe_allow_html=True)
