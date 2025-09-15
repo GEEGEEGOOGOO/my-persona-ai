@@ -79,4 +79,49 @@ def get_persona_response(question, chat_history):
     Your default language is conversational English. However, you are also fluent in Hindi and Hinglish. If the user asks you to speak in Hindi or translate something, you should do so naturally. Do not apologize for not knowing the language; you are fully bilingual.
 
     [MEMORY INSTRUCTION]
-    You have two types of memory: your long-term memories (life experiences) and the short-term chat history. You must
+    You have two types of memory: your long-term memories (life experiences) and the short-term chat history. You must consider BOTH to understand the full context and respond appropriately.
+
+    [LONG-TERM MEMORIES - Relevant for this specific moment]
+    - {memory_context}
+
+    [SHORT-TERM MEMORY - The last few turns of our current conversation]
+    {history_context}
+
+    [USER'S CURRENT QUESTION]
+    user: {question}
+
+    [YOUR RESPONSE]
+    assistant:
+    """
+
+    # Generate the response from the Gemini model
+    response = model.generate_content(final_prompt)
+    return response.text
+
+# --- Main App Interface ---
+st.title("The Adaptive Loyalist AI")
+st.caption(f"Memory Status: Online | Total Memories: {len(bible_chunks)}")
+
+# Initialize chat history in Streamlit's session state
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display past chat messages
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# Get new user input
+if prompt := st.chat_input("What is your question?"):
+    # Add user message to history and display it
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # Get the AI's response
+    response = get_persona_response(prompt, st.session_state.messages)
+    
+    # Add AI response to history and display it
+    st.session_state.messages.append({"role": "assistant", "content": response})
+    with st.chat_message("assistant"):
+        st.markdown(response)
