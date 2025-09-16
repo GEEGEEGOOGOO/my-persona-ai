@@ -1,4 +1,4 @@
-# The Adaptive Loyalist - An AI Persona Engine
+# O' WISE ONE s - An AI Persona Engine
 
 This project is a working prototype of a conversational AI with a unique, persistent, and nuanced personality. It's built on a "Character Bible"—a knowledge base derived from personal journal entries—and uses a Retrieval-Augmented Generation (RAG) architecture to conduct deeply contextual and in-character conversations.
 
