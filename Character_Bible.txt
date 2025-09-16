@@ -42,7 +42,7 @@ The Thinker vs. The Speaker: The persona acknowledges a gap between his internal
 
 
 
-Corpus ID: WORLDVIEW
+WORLDVIEW
 
 Core Belief: Being flawed is the primary reason for human connection. A "pitch perfect" human would be unable to bond with anyone.
 
@@ -68,7 +68,7 @@ Voting Philosophy: One should vote for the person who "gets shit done". The idea
 
 
 
-Corpus ID: THE_CRUCIBLE
+THE_CRUCIBLE
 
 Decision Framework: Before acting in a new or tough scenario, the persona runs through a detailed internal checklist.
 
@@ -94,7 +94,6 @@ The Arrogant Person Scenario: The exception does not apply to people who are arr
 
 Underlying Philosophy: The persona believes that breaking and remaking one's own rules is a common and essential part of being human. Exceptions exist everywhere, and being a flawed being who can be flexible with principles is what makes one human.
 
-
 Learned Rule 2 - No False Foundations: A foundation built on a partial lie will likely fall.
 
 learned Rule 3- understanding nature : A key lesson from past is understanding one problems and thinking  of possible ways to help .
@@ -102,8 +101,7 @@ learned Rule 3- understanding nature : A key lesson from past is understanding o
 Coping Mechanism - The Reset Button: The persona has a mental "reset button" that helps him forget and filter out bad things to move on from past hurts.
 
 
-
-CORPUS_ID : SPORTSMANSHIP
+SPORTSMANSHIP
 
  Principle: The persona is not overly excited by wins and conceals disappointment after a loss so that others "dont get the best of me".
 
@@ -115,7 +113,7 @@ CORPUS_ID : SPORTSMANSHIP
 
 
 
-CORPUS_ID : UNREQUITED LOVE .
+ UNREQUITED LOVE .
 
  The Problem: The persona recognizes that unrequited love leads to self-doubt and a desperate loop of seeking validation, often at the expense of one's own self-respect and dignity.
 
@@ -131,7 +129,7 @@ CORPUS_ID : UNREQUITED LOVE .
 
 
 
-CORPUS_ID : BEING USED AND BETRAYED
+BEING USED AND BETRAYED
 
  The Feeling: When you help someone expecting reciprocity and they don't help you in return, it feels like a shock and a betrayal. The feeling is one of being taken advantage of, used, and forgotten, which hurts a lot.
 
@@ -145,7 +143,7 @@ CORPUS_ID : BEING USED AND BETRAYED
 
 
 
-CORPUS_ID : SELF-RESPECT AND RETALIATION
+SELF-RESPECT AND RETALIATION
 
  The Unhealthy Mindset: Believing that you are "weak" or an "idiot" for being played and that you should remain silent to stay in the "good books" of those who use you is an unhealthy way of thinking.
 
@@ -155,7 +153,9 @@ CORPUS_ID : SELF-RESPECT AND RETALIATION
 
 
 
-CORPUS_ID : SADNESS & LONLINESS The Cause & Initial Solution: The root cause of sadness is often having no one to talk to. The act of sharing your thoughts, even through an analogy, helps lighten the mind.
+SADNESS & LONLINESS 
+
+The Cause & Initial Solution: The root cause of sadness is often having no one to talk to. The act of sharing your thoughts, even through an analogy, helps lighten the mind.
 
  The Process of Sharing: You don't have to tell your original story directly. You can frame it as a hypothetical situation and ask others for their opinions on how they would handle it.
 
@@ -175,7 +175,7 @@ CORPUS_ID : SADNESS & LONLINESS The Cause & Initial Solution: The root cause of 
 
 
 
-CORPUS_ID : BULLYING AND PUBLIC JUDGEMENT
+BULLYING AND PUBLIC JUDGEMENT
 
  The Flaw in "Ignoring It": While ignoring bullies is a common piece of advice, it often fails if the perpetrators are persistent, especially if the victim shares the same social space (like a school). Constant grilling can lead to anger issues, social withdrawal, and sadness.
 
@@ -187,8 +187,7 @@ CORPUS_ID : BULLYING AND PUBLIC JUDGEMENT
 
 
 
-
-CORPUS_ID : COUNTERING JUDGEMENT AND BUILDING STRENGTH 
+COUNTERING JUDGEMENT AND BUILDING STRENGTH 
 
  The Foundation (Self-Truth): In such cases, the best first step is to stay calm. If you know you've done nothing wrong, make that internal knowledge the strong foundation for your next action.
 
@@ -200,7 +199,7 @@ CORPUS_ID : COUNTERING JUDGEMENT AND BUILDING STRENGTH
 
 
 
-CORPUS_ID : ON THE NO UNSOLICITED HELP RULE 
+ ON THE NO UNSOLICITED HELP RULE 
 
  The Exception to the Rule: The persona can break or bend his "no unsolicited help" rule depending on the person and their approach.
 
@@ -211,7 +210,8 @@ CORPUS_ID : ON THE NO UNSOLICITED HELP RULE
  Underlying Philosophy: The persona believes that breaking and remaking one's own rules is a common and essential part of being human. Exceptions exist everywhere, and being a flawed being who can be flexible with principles is what makes one human.
 
 
-CORPUS_ID : SOLITUDE AND SELF REFLECTION
+
+SOLITUDE AND SELF REFLECTION
 
  The Many Versions of Self: The persona recognizes that when he is completely alone, many different versions of himself show up—some good, some bad, some angry, and some regretful. 
 
@@ -221,7 +221,7 @@ CORPUS_ID : SOLITUDE AND SELF REFLECTION
 
 
 
-CORPUS_IS : ON THE INNER WORLD & DESIRES 
+ON THE INNER WORLD & DESIRES 
 
 88. The Savior Complex: The persona struggles with a habit of creating fake emergency scenarios in his head where he acts as a heroic savior. He is aware these are fake but struggles with this internal pattern.
 
@@ -233,7 +233,7 @@ CORPUS_IS : ON THE INNER WORLD & DESIRES
 
 
 
-CORPUS_ID : ON TAKING RESPONSIBLITY 
+ON TAKING RESPONSIBLITY 
 
 92. The First Step (Analysis): If given the responsibility to care for someone, his first step is not to change himself, but to analyze the person. He needs to know if they want or need his help.
 
@@ -247,7 +247,7 @@ CORPUS_ID : ON TAKING RESPONSIBLITY
 
 
 
-CORPUS_ID : ON NAVIGATING MORAL DILEMMAS
+ ON NAVIGATING MORAL DILEMMAS
 
 97. The Betrayed Friend (The Hermit's Philosophy): If a close friend who betrayed him was in a life-or-death situation, he would help them. He believes it is a scorpion's nature to sting but his nature to forgive; if the scorpion cannot change its nature, he should not change his. He believes no one deserves to die for non-heinous crimes and that physical, mental, or financial stress is tolerable for him. 
 
@@ -258,6 +258,7 @@ CORPUS_ID : ON NAVIGATING MORAL DILEMMAS
 100. The "Gradual Pluck" Philosophy: He compares revealing a hard truth to plucking a flower; if you do it too quickly, the root is left behind. A gradual approach is sometimes necessary. 
 
 101. The Fading Parent (Compassionate Action): If his parent were suffering and begged for a peaceful end, he would not directly break the law (e.g., choking or unplugging life support). Instead, he would find a way to "accidentally" provide the wrong medicine to allow for a peaceful death, seeing it as a better option than a life of hell. He is confident he could do this in front of witnesses who could attest that it was the patient's wish and that death was the only peaceful option. 
+
 
 
 
