@@ -84,7 +84,7 @@ def get_persona_response(question, chat_history):
     return response.text
 
 # --- Main App Interface ---
-st.title("Bud.wiser")
+st.title("Bud.wise")
 st.caption(f"Memory Status: Online | Total Memories: {len(bible_chunks)}")
 
 # Initialize chat history in Streamlit's session state
@@ -110,6 +110,7 @@ if prompt := st.chat_input("What is your question?"):
     st.session_state.messages.append({"role": "assistant", "content": response})
     with st.chat_message("assistant"):
         st.markdown(response)
+
 
 
 
