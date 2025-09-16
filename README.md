@@ -2,7 +2,7 @@
 
 This project is a working prototype of a conversational AI with a unique, persistent, and nuanced personality. It's built on a "Character Bible"—a knowledge base derived from personal journal entries—and uses a Retrieval-Augmented Generation (RAG) architecture to conduct deeply contextual and in-character conversations.
 
-This is the V1 prototype of "The Adaptive Loyalist," a persona that is self-aware, regulated, and deeply loyal, but has a defined breaking point at betrayal.
+This is the V1 prototype of "O' WISE ONE," a persona that is self-aware, regulated, and deeply loyal, but has a defined breaking point at betrayal.
 
 ---
 
