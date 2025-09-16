@@ -15,6 +15,9 @@ GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY")
 # This is the file containing our Character Bible chunks.
 BIBLE_FILE = "Character_Bible.txt"
 
+# This is where we will log the conversations.
+LOG_FILE = "chat_logs.txt"
+
 # --- Initialization ---
 # Configure the Gemini AI model
 genai.configure(api_key=GEMINI_API_KEY)
@@ -43,6 +46,15 @@ def build_vector_store():
 
 # Build the vector store once when the app starts
 vector_store, bible_chunks = build_vector_store()
+
+# Function to log conversations
+def log_conversation(question, answer):
+    # This function will create and append to a log file.
+    # Note: This will only work reliably when you run the app on your local machine.
+    with open(LOG_FILE, "a", encoding='utf-8') as log_file:
+        log_file.write(f"--- Conversation Timestamp: {datetime.datetime.now()} ---\n")
+        log_file.write(f"User Question: {question}\n")
+        log_file.write(f"AI Answer: {answer}\n\n")
 
 # Function to get the AI's response
 def get_persona_response(question, chat_history):
@@ -111,13 +123,5 @@ if prompt := st.chat_input("What's buggin' ya?"):
     with st.chat_message("assistant"):
         st.markdown(response)
 
-
-
-
-
-
-
-
-
-
-
+    # Log the conversation to our file
+    log_conversation(prompt, response)
