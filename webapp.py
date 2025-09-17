@@ -20,11 +20,14 @@ SHEET_NAME = "AI_Chat_Logs"
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-# Configure Google Sheets access using the new secret format
+# Configure Google Sheets access with BOTH Drive and Sheets API scopes
 @st.cache_resource
 def get_gspread_client():
-    scopes = ["https://www.googleapis.com/auth/spreadsheets"]
-    # Read the JSON string from secrets and convert it to a dictionary
+    scopes = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"  # This is the new, crucial line
+    ]
+    # Load credentials from Streamlit's secrets
     creds_json_str = st.secrets["GCS_SECRETS_JSON"]
     creds_info = json.loads(creds_json_str)
     creds = Credentials.from_service_account_info(creds_info, scopes=scopes)
