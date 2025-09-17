@@ -117,3 +117,4 @@ if prompt := st.chat_input("What's buggin' ya?"):
     
     # Log the conversation to the Google Sheet
     log_conversation_to_sheet(prompt, response)
+
