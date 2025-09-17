@@ -2,3 +2,6 @@ streamlit
 google-generativeai
 faiss-cpu
 sentence-transformers
+numpy
+gspread
+google-auth-oauthlib
