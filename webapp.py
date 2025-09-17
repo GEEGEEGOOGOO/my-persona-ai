@@ -20,14 +20,13 @@ SHEET_NAME = "AI_Chat_Logs"
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-# Configure Google Sheets access using the new secret format
+# Configure Google Sheets access
 @st.cache_resource
 def get_gspread_client():
     scopes = ["https://www.googleapis.com/auth/spreadsheets"]
-    # Read the JSON string from secrets and convert it to a dictionary
-    creds_json_str = st.secrets["GCS_SECRETS_JSON"]
-    creds_info = json.loads(creds_json_str)
-    creds = Credentials.from_service_account_info(creds_info, scopes=scopes)
+    # Load credentials from Streamlit's secrets
+    creds_json = dict(st.secrets) 
+    creds = Credentials.from_service_account_info(creds_json, scopes=scopes)
     client = gspread.authorize(creds)
     return client
 
@@ -42,7 +41,7 @@ def load_embedding_model():
 
 embedding_model = load_embedding_model()
 
-# --- Functions --- (The rest of the code is the same)
+# --- Functions ---
 
 @st.cache_resource
 def build_vector_store():
@@ -56,6 +55,7 @@ def build_vector_store():
 vector_store, bible_chunks = build_vector_store()
 
 def log_conversation_to_sheet(question, answer):
+    # Appends a new row to the Google Sheet
     row = [str(datetime.datetime.now()), question, answer]
     worksheet.append_row(row)
 
