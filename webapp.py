@@ -11,7 +11,7 @@ import json
 
 # --- Page Configuration ---
 st.set_page_config(
-    page_title="The Adaptive Loyalist AI",
+    page_title="Confession Chamber",
     page_icon="🤖",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -169,41 +169,73 @@ st.markdown("""
     /* Custom input styling */
     .stChatInput {
         position: relative;
-        max-width: 600px;
-        margin: 2rem auto;
+        max-width: 700px;
+        margin: 3rem auto;
+        padding: 0;
+    }
+    
+    .stChatInput > div {
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
     }
     
     .stChatInput textarea {
-        border: 2px solid var(--burgundy-300) !important;
+        border: 1px solid var(--burgundy-200) !important;
         border-radius: 0 !important;
-        background-color: white !important;
-        min-height: 50px !important;
-        max-height: 100px !important;
-        padding: 1rem !important;
-        color: var(--burgundy-700) !important;
-        font-weight: 500 !important;
+        background-color: #ffffff !important;
+        min-height: 55px !important;
+        max-height: 120px !important;
+        padding: 1.2rem 1.5rem !important;
+        color: var(--burgundy-600) !important;
+        font-weight: 400 !important;
+        font-size: 1rem !important;
+        line-height: 1.5 !important;
+        resize: none !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 8px rgba(139, 0, 0, 0.08) !important;
     }
     
     .stChatInput textarea:focus {
         border-color: var(--burgundy-400) !important;
-        box-shadow: 0 0 0 1px var(--burgundy-400) !important;
+        box-shadow: 0 4px 12px rgba(139, 0, 0, 0.15) !important;
+        outline: none !important;
     }
     
     .stChatInput textarea::placeholder {
-        color: var(--burgundy-400) !important;
-        opacity: 0.7 !important;
+        color: var(--burgundy-300) !important;
+        opacity: 1 !important;
+        font-style: italic !important;
     }
     
     .stChatInput button {
         background-color: var(--burgundy-500) !important;
-        border-color: var(--burgundy-500) !important;
-        color: white !important;
+        border: 1px solid var(--burgundy-500) !important;
         border-radius: 0 !important;
+        color: white !important;
+        font-weight: 500 !important;
+        padding: 0.8rem 1.5rem !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 8px rgba(139, 0, 0, 0.2) !important;
+        height: auto !important;
+        min-height: 55px !important;
     }
     
     .stChatInput button:hover {
         background-color: var(--burgundy-600) !important;
         border-color: var(--burgundy-600) !important;
+        box-shadow: 0 4px 12px rgba(139, 0, 0, 0.3) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    .stChatInput button:active {
+        transform: translateY(0) !important;
+        box-shadow: 0 2px 6px rgba(139, 0, 0, 0.2) !important;
+    }
+    
+    /* Clean spacing around input */
+    .stChatInput + div {
+        margin-top: 0 !important;
     }
     
     /* Animated elements */
