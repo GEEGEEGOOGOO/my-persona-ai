@@ -167,15 +167,35 @@ st.markdown("""
     }
     
     /* Custom input styling */
+    .stChatInput {
+        position: relative;
+        max-width: 600px;
+        margin: 2rem auto;
+    }
+    
     .stChatInput textarea {
         border: 2px solid var(--burgundy-300) !important;
         border-radius: 0.75rem !important;
         background-color: white !important;
+        min-height: 50px !important;
+        max-height: 100px !important;
+        padding: 1rem !important;
     }
     
     .stChatInput textarea:focus {
         border-color: var(--burgundy-400) !important;
         box-shadow: 0 0 0 1px var(--burgundy-400) !important;
+    }
+    
+    .stChatInput button {
+        background-color: var(--burgundy-500) !important;
+        border-color: var(--burgundy-500) !important;
+        color: white !important;
+    }
+    
+    .stChatInput button:hover {
+        background-color: var(--burgundy-600) !important;
+        border-color: var(--burgundy-600) !important;
     }
     
     /* Animated elements */
@@ -184,7 +204,9 @@ st.markdown("""
     }
     
     .bounce-animation {
-        animation: bounce 1s infinite;
+        animation: spin 2s linear infinite;
+        display: inline-block;
+        transform-origin: center;
     }
     
     @keyframes pulse {
@@ -192,10 +214,9 @@ st.markdown("""
         50% { opacity: 0.5; }
     }
     
-    @keyframes bounce {
-        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-        40% { transform: translateY(-10px); }
-        60% { transform: translateY(-5px); }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
     }
     
     /* Additional styling for better appearance */
@@ -328,7 +349,7 @@ def get_persona_response(question, chat_history):
 st.markdown(f"""
 <div class="custom-header">
     <h1>
-        <span class="pulse-animation">🔄</span> The Adaptive Loyalist AI
+        <span class="bounce-animation">🌪️</span> The Adaptive Loyalist AI
     </h1>
     <p class="subtitle">"A sensible, matured and highly cognitive companion"</p>
     <div class="memory-status">
@@ -351,28 +372,26 @@ for message in st.session_state.messages:
     else:
         st.markdown(f'<div class="assistant-message">{message["content"]}</div>', unsafe_allow_html=True)
 
-# Chat input
-if prompt := st.chat_input("What's buggin' ya?"):
-    # Add user message to chat history
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    
-    # Display user message immediately
-    st.markdown(f'<div class="user-message">{prompt}</div>', unsafe_allow_html=True)
-    
-    # Generate and display assistant response
-    with st.spinner("🤔 Thinking..."):
-        response = get_persona_response(prompt, st.session_state.messages)
-    
-    st.session_state.messages.append({"role": "assistant", "content": response})
-    st.markdown(f'<div class="assistant-message">{response}</div>', unsafe_allow_html=True)
-    
-    # Log the conversation
-    log_conversation_to_sheet(prompt, response)
-    
-    # Rerun to update the display
-    st.rerun()
-
 st.markdown('</div>', unsafe_allow_html=True)
+
+# Chat input - moved above features section and made shorter
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    if prompt := st.chat_input("What's buggin' ya?"):
+        # Add user message to chat history
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        
+        # Generate and display assistant response
+        with st.spinner("🤔 Thinking..."):
+            response = get_persona_response(prompt, st.session_state.messages)
+        
+        st.session_state.messages.append({"role": "assistant", "content": response})
+        
+        # Log the conversation
+        log_conversation_to_sheet(prompt, response)
+        
+        # Rerun to update the display
+        st.rerun()
 
 # --- Features Section ---
 st.markdown("""
