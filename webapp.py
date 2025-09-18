@@ -20,9 +20,6 @@ st.set_page_config(
 # --- Custom CSS ---
 st.markdown("""
 <style>
-    /* Import fonts and AOS */
-    @import url('https://unpkg.com/aos@2.3.1/dist/aos.css');
-    
     /* Hide Streamlit default elements */
     .stApp > header[data-testid="stHeader"] {
         background-color: transparent;
@@ -201,6 +198,29 @@ st.markdown("""
         60% { transform: translateY(-5px); }
     }
     
+    /* Additional styling for better appearance */
+    .streamlit-expanderHeader {
+        display: none;
+    }
+    
+    /* Custom scrollbar for better aesthetics */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: var(--burgundy-100);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: var(--burgundy-400);
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--burgundy-500);
+    }
+    
     /* Icons */
     .icon {
         display: inline-block;
@@ -214,6 +234,11 @@ st.markdown("""
         width: 2.5rem;
         height: 2.5rem;
         margin-bottom: 1rem;
+    }
+    
+    /* Fix for Streamlit spacing */
+    .block-container {
+        padding-top: 1rem;
     }
 </style>
 """, unsafe_allow_html=True)
