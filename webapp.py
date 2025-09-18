@@ -175,11 +175,13 @@ st.markdown("""
     
     .stChatInput textarea {
         border: 2px solid var(--burgundy-300) !important;
-        border-radius: 0.75rem !important;
+        border-radius: 0 !important;
         background-color: white !important;
         min-height: 50px !important;
         max-height: 100px !important;
         padding: 1rem !important;
+        color: var(--burgundy-700) !important;
+        font-weight: 500 !important;
     }
     
     .stChatInput textarea:focus {
@@ -187,10 +189,16 @@ st.markdown("""
         box-shadow: 0 0 0 1px var(--burgundy-400) !important;
     }
     
+    .stChatInput textarea::placeholder {
+        color: var(--burgundy-400) !important;
+        opacity: 0.7 !important;
+    }
+    
     .stChatInput button {
         background-color: var(--burgundy-500) !important;
         border-color: var(--burgundy-500) !important;
         color: white !important;
+        border-radius: 0 !important;
     }
     
     .stChatInput button:hover {
@@ -204,7 +212,7 @@ st.markdown("""
     }
     
     .bounce-animation {
-        animation: spin 2s linear infinite;
+        animation: spin-horizontal 2s linear infinite;
         display: inline-block;
         transform-origin: center;
     }
@@ -214,9 +222,9 @@ st.markdown("""
         50% { opacity: 0.5; }
     }
     
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+    @keyframes spin-horizontal {
+        0% { transform: rotateY(0deg); }
+        100% { transform: rotateY(360deg); }
     }
     
     /* Additional styling for better appearance */
