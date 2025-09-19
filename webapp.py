@@ -20,164 +20,222 @@ st.set_page_config(
 # --- Custom CSS ---
 st.markdown("""
 <style>
+    /* Import Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
     /* Hide Streamlit default elements */
     .stApp > header[data-testid="stHeader"] {
         background-color: transparent;
     }
     
     .main .block-container {
-        padding-top: 2rem;
-        padding-left: 2rem;
-        padding-right: 2rem;
-        max-width: 1200px;
+        padding: 0;
+        max-width: 100%;
     }
     
-    /* Custom burgundy colors - Dark Mode */
+    /* Custom color palette - Exact match */
     :root {
-        --burgundy-50: #1A1A1A;
-        --burgundy-100: #2D2D2D;
-        --burgundy-200: #404040;
-        --burgundy-300: #8B5A5A;
-        --burgundy-400: #B85C5C;
-        --burgundy-500: #D88B8B;
-        --burgundy-600: #E8A8A8;
-        --burgundy-700: #F0C0C0;
+        --bg-primary: #1F2937;
+        --bg-secondary: #374151;
+        --bg-tertiary: #4B5563;
         --text-primary: #FFFFFF;
-        --text-secondary: #B0B0B0;
-        --text-muted: #888888;
+        --text-secondary: #D1D5DB;
+        --text-muted: #9CA3AF;
+        --accent-red: #DC2626;
+        --accent-green: #10B981;
+        --border-color: #4B5563;
+        --chat-bg: #2D3748;
+    }
+    
+    /* Global styles */
+    * {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
     
     /* Background */
     .stApp {
-        background-color: var(--burgundy-50);
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
     }
     
-    /* Header styling */
-    .custom-header {
-        text-align: center;
-        margin-bottom: 2rem;
+    /* Hide Streamlit elements */
+    .stDeployButton {
+        display: none;
+    }
+    
+    .stDecoration {
+        display: none;
+    }
+    
+    #MainMenu {
+        display: none;
+    }
+    
+    footer {
+        display: none;
+    }
+    
+    /* Main container */
+    .main-container {
+        max-width: 1000px;
+        margin: 0 auto;
         padding: 2rem;
-        background: white;
-        border-radius: 1rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border: 2px solid var(--burgundy-300);
+        min-height: 100vh;
     }
     
-    .custom-header h1 {
-        color: var(--burgundy-600);
-        font-size: 2.5rem;
-        font-weight: bold;
-        margin: 0;
-        display: flex;
+    /* Header section */
+    .header-section {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .app-icon {
+        width: 60px;
+        height: 60px;
+        background-color: var(--accent-red);
+        border-radius: 50%;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 1rem;
+        margin-bottom: 1rem;
+        font-size: 24px;
     }
     
-    .custom-header .subtitle {
-        color: var(--burgundy-400);
+    .app-title {
+        color: var(--text-primary);
+        font-size: 2.5rem;
+        font-weight: 600;
+        margin: 0;
+        letter-spacing: -0.02em;
+    }
+    
+    .app-subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
         font-style: italic;
-        font-size: 1.2rem;
-        margin: 1rem 0;
+        margin: 1rem 0 2rem 0;
+        font-weight: 300;
     }
     
     .memory-status {
-        background-color: var(--burgundy-100);
-        color: var(--burgundy-600);
+        background-color: var(--bg-secondary);
         padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
+        border-radius: 8px;
         display: inline-block;
-        font-weight: 500;
-        margin-top: 1rem;
-    }
-    
-    /* Chat container styling */
-    .chat-container {
-        background: var(--burgundy-100);
-        border-radius: 1rem;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        border: 2px solid var(--burgundy-200);
-        margin: 2rem 0;
-        overflow: hidden;
-    }
-    
-    /* Features section */
-    .features-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin: 3rem 0;
-    }
-    
-    .feature-card {
-        background: var(--burgundy-100);
-        padding: 2rem;
-        border-radius: 1rem;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        border: 2px solid var(--burgundy-200);
-        transition: all 0.3s ease;
-    }
-    
-    .feature-card:hover {
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-        transform: translateY(-2px);
-        border-color: var(--burgundy-300);
-    }
-    
-    .feature-card h3 {
-        color: var(--text-primary);
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-    
-    .feature-card p {
         color: var(--text-secondary);
-        line-height: 1.6;
+        font-size: 0.9rem;
+        border: 1px solid var(--border-color);
     }
     
-    .feature-icon {
-        color: var(--burgundy-500);
-        font-size: 2rem;
+    .memory-online {
+        color: var(--accent-green);
+        font-weight: 500;
+    }
+    
+    /* Chat section */
+    .chat-section {
+        margin-bottom: 2rem;
+    }
+    
+    .chat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-color);
     }
     
-    /* Message styling */
+    .chat-title {
+        color: var(--text-primary);
+        font-size: 1.2rem;
+        font-weight: 500;
+        margin: 0;
+    }
+    
+    .chat-add-btn {
+        background: none;
+        border: none;
+        color: var(--accent-red);
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+    }
+    
+    .chat-add-btn:hover {
+        background-color: var(--bg-secondary);
+    }
+    
+    /* Chat container */
+    .chat-container {
+        background-color: var(--chat-bg);
+        border-radius: 12px;
+        min-height: 400px;
+        padding: 2rem;
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 0;
+    }
+    
+    .chat-placeholder {
+        text-align: center;
+        color: var(--text-secondary);
+    }
+    
+    .chat-placeholder-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.6;
+    }
+    
+    .chat-placeholder-text {
+        font-size: 1rem;
+        margin: 0;
+    }
+    
+    /* Messages */
     .user-message {
-        background-color: var(--burgundy-400);
+        background-color: var(--accent-red);
         color: white;
-        padding: 1rem;
-        border-radius: 1rem;
-        border-bottom-right-radius: 0.25rem;
-        margin: 1rem 0;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        border-bottom-right-radius: 4px;
+        margin: 0.5rem 0;
         max-width: 70%;
         margin-left: auto;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        word-wrap: break-word;
     }
     
     .assistant-message {
-        background-color: var(--burgundy-200);
+        background-color: var(--bg-secondary);
         color: var(--text-primary);
-        padding: 1rem;
-        border-radius: 1rem;
-        border-bottom-left-radius: 0.25rem;
-        margin: 1rem 0;
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        border-bottom-left-radius: 4px;
+        margin: 0.5rem 0;
         max-width: 70%;
         margin-right: auto;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        word-wrap: break-word;
     }
     
-    /* Hide default Streamlit chat styling */
-    .stChatMessage {
-        background: transparent !important;
+    /* Input section */
+    .input-section {
+        background-color: var(--bg-secondary);
+        padding: 1rem;
+        border-radius: 0 0 12px 12px;
+        border-top: 1px solid var(--border-color);
+        margin-top: 0;
     }
     
     /* Custom input styling */
     .stChatInput {
-        position: relative;
-        max-width: 700px;
-        margin: 3rem auto;
-        padding: 0;
+        margin: 0 !important;
+        padding: 0 !important;
     }
     
     .stChatInput > div {
@@ -187,125 +245,69 @@ st.markdown("""
     }
     
     .stChatInput textarea {
-        border: 1px solid var(--burgundy-200) !important;
-        border-radius: 0 !important;
-        background-color: var(--burgundy-100) !important;
-        min-height: 55px !important;
-        max-height: 120px !important;
-        padding: 1.2rem 1.5rem !important;
+        background-color: var(--bg-tertiary) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 8px !important;
         color: var(--text-primary) !important;
-        font-weight: 400 !important;
-        font-size: 1rem !important;
-        line-height: 1.5 !important;
+        font-size: 0.95rem !important;
+        padding: 1rem !important;
+        min-height: 48px !important;
+        max-height: 120px !important;
         resize: none !important;
         transition: all 0.2s ease !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
     }
     
     .stChatInput textarea:focus {
-        border-color: var(--burgundy-400) !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+        border-color: var(--accent-red) !important;
+        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2) !important;
         outline: none !important;
     }
     
     .stChatInput textarea::placeholder {
         color: var(--text-muted) !important;
         opacity: 1 !important;
-        font-style: italic !important;
     }
     
     .stChatInput button {
-        background-color: var(--burgundy-400) !important;
-        border: 1px solid var(--burgundy-400) !important;
-        border-radius: 0 !important;
+        background-color: var(--accent-red) !important;
+        border: 1px solid var(--accent-red) !important;
+        border-radius: 8px !important;
         color: white !important;
         font-weight: 500 !important;
-        padding: 0.8rem 1.5rem !important;
+        padding: 0 1.5rem !important;
+        height: 48px !important;
         transition: all 0.2s ease !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
-        height: auto !important;
-        min-height: 55px !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
     }
     
     .stChatInput button:hover {
-        background-color: var(--burgundy-500) !important;
-        border-color: var(--burgundy-500) !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-        transform: translateY(-1px) !important;
+        background-color: #B91C1C !important;
+        border-color: #B91C1C !important;
     }
     
-    .stChatInput button:active {
-        transform: translateY(0) !important;
-        box-shadow: 0 2px 6px rgba(139, 0, 0, 0.2) !important;
-    }
-    
-    /* Clean spacing around input */
-    .stChatInput + div {
-        margin-top: 0 !important;
-    }
-    
-    /* Animated elements */
-    .pulse-animation {
-        animation: pulse 2s infinite;
-    }
-    
-    .bounce-animation {
-        animation: spin-horizontal 2s linear infinite;
-        display: inline-block;
-        transform-origin: center;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
-    }
-    
-    @keyframes spin-horizontal {
-        0% { transform: rotateY(0deg); }
-        100% { transform: rotateY(360deg); }
-    }
-    
-    /* Additional styling for better appearance */
-    .streamlit-expanderHeader {
+    /* Features section - hide for now to match screenshot */
+    .features-section {
         display: none;
     }
     
-    /* Custom scrollbar for better aesthetics */
+    /* Scrollbar */
     ::-webkit-scrollbar {
-        width: 8px;
+        width: 6px;
     }
     
     ::-webkit-scrollbar-track {
-        background: var(--burgundy-100);
+        background: var(--bg-secondary);
     }
     
     ::-webkit-scrollbar-thumb {
-        background: var(--burgundy-400);
-        border-radius: 4px;
+        background: var(--bg-tertiary);
+        border-radius: 3px;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        background: var(--burgundy-500);
-    }
-    
-    /* Icons */
-    .icon {
-        display: inline-block;
-        width: 1.5rem;
-        height: 1.5rem;
-        margin-right: 0.5rem;
-        vertical-align: middle;
-    }
-    
-    .large-icon {
-        width: 2.5rem;
-        height: 2.5rem;
-        margin-bottom: 1rem;
-    }
-    
-    /* Fix for Streamlit spacing */
-    .block-container {
-        padding-top: 1rem;
+        background: var(--border-color);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -391,90 +393,73 @@ def get_persona_response(question, chat_history):
     response = model.generate_content(final_prompt)
     return response.text
 
-# --- Custom Header ---
-st.markdown(f"""
-<div class="custom-header">
-    <h1>
-        <span class="bounce-animation">🌪️</span> The Adaptive Loyalist AI
-    </h1>
-    <p class="subtitle">"A sensible, matured and highly cognitive companion"</p>
-    <div class="memory-status">
-        📊 Memory Status: <span style="color: #059669;">Online</span> | Total Memories: <span>{len(bible_chunks)}</span>
+# --- Main App Layout ---
+st.markdown("""
+<div class="main-container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="app-icon">🌪️</div>
+        <h1 class="app-title">The Adaptive Loyalist AI</h1>
+        <p class="app-subtitle">"A sensible, matured and highly cognitive companion"</p>
+        <div class="memory-status">
+            📊 Memory Status: <span class="memory-online">Online</span> | Total Memories: """ + str(len(bible_chunks)) + """
+        </div>
     </div>
-</div>
+    
+    <!-- Chat Section -->
+    <div class="chat-section">
+        <div class="chat-header">
+            <h2 class="chat-title">Chat</h2>
+            <button class="chat-add-btn">+</button>
+        </div>
 """, unsafe_allow_html=True)
 
-# --- Chat Interface ---
+# Chat Container
 st.markdown('<div class="chat-container">', unsafe_allow_html=True)
 
 # Initialize chat history
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display chat messages with custom styling
-for message in st.session_state.messages:
-    if message["role"] == "user":
-        st.markdown(f'<div class="user-message">{message["content"]}</div>', unsafe_allow_html=True)
-    else:
-        st.markdown(f'<div class="assistant-message">{message["content"]}</div>', unsafe_allow_html=True)
+# Display messages or placeholder
+if not st.session_state.messages:
+    st.markdown("""
+    <div class="chat-placeholder">
+        <div class="chat-placeholder-icon">💬</div>
+        <p class="chat-placeholder-text">Start a conversation with your AI companion</p>
+    </div>
+    """, unsafe_allow_html=True)
+else:
+    # Display chat messages
+    for message in st.session_state.messages:
+        if message["role"] == "user":
+            st.markdown(f'<div class="user-message">{message["content"]}</div>', unsafe_allow_html=True)
+        else:
+            st.markdown(f'<div class="assistant-message">{message["content"]}</div>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Chat input - moved above features section and made shorter
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    if prompt := st.chat_input("What's buggin' ya?"):
-        # Add user message to chat history
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        
-        # Generate and display assistant response
-        with st.spinner("🤔 Thinking..."):
-            response = get_persona_response(prompt, st.session_state.messages)
-        
-        st.session_state.messages.append({"role": "assistant", "content": response})
-        
-        # Log the conversation
-        log_conversation_to_sheet(prompt, response)
-        
-        # Rerun to update the display
-        st.rerun()
+# Input Section
+st.markdown('<div class="input-section">', unsafe_allow_html=True)
 
-# --- Features Section ---
-st.markdown("""
-<div class="features-container">
-    <div class="feature-card">
-        <div class="feature-icon large-icon">🌐</div>
-        <h3>Bilingual AI</h3>
-        <p>Fluent in both English and Hindi, responding naturally in the language you prefer.</p>
-    </div>
-    <div class="feature-card">
-        <div class="feature-icon large-icon">📚</div>
-        <h3>Context Aware</h3>
-        <p>Remembers both long-term knowledge and short-term conversation history.</p>
-    </div>
-    <div class="feature-card">
-        <div class="feature-icon large-icon">🛡️</div>
-        <h3>Privacy Focused</h3>
-        <p>Conversations are securely logged for improvement while respecting your privacy.</p>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+# Chat input
+if prompt := st.chat_input("What's buggin' ya?"):
+    # Add user message to chat history
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    
+    # Generate and display assistant response
+    with st.spinner("🤔 Thinking..."):
+        response = get_persona_response(prompt, st.session_state.messages)
+    
+    st.session_state.messages.append({"role": "assistant", "content": response})
+    
+    # Log the conversation
+    log_conversation_to_sheet(prompt, response)
+    
+    # Rerun to update the display
+    st.rerun()
 
-# --- JavaScript for animations (optional enhancement) ---
-st.markdown("""
-<script>
-// Add some interactive animations
-document.addEventListener('DOMContentLoaded', function() {
-    // Add hover effects to feature cards
-    const cards = document.querySelectorAll('.feature-card');
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-5px)';
-        });
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
-});
-</script>
-""", unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
+# Close main container
+st.markdown('</div>', unsafe_allow_html=True)
