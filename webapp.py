@@ -288,11 +288,16 @@ GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY")
 GCS_SECRETS_JSON = st.secrets.get("GCS_SECRETS_JSON")
 
 if not GEMINI_API_KEY or not GCS_SECRETS_JSON:
-    st.error("Missing secrets! Please add GEMINI_API_KEY and GCS_SECRETS_JSON to your Streamlit secrets.")
+    st.error("🛑 **CRITICAL ERROR:** Missing secrets! Please ensure `GEMINI_API_KEY` and `GCS_SECRETS_JSON` are correctly set in your Streamlit secrets.")
     st.stop()
     
 BIBLE_FILE = "Character_Bible.txt"
 SHEET_NAME = "AI_Chat_Logs"
+
+# --- File Check ---
+if not os.path.exists(BIBLE_FILE):
+    st.error(f"🛑 **CRITICAL ERROR:** The memory file (`{BIBLE_FILE}`) could not be found. Please make sure it is uploaded and in the same directory as the `app.py` file.")
+    st.stop()
 
 # --- Initialization ---
 # Configure the Gemini AI model
@@ -316,7 +321,8 @@ try:
     spreadsheet = gs_client.open(SHEET_NAME)
     worksheet = spreadsheet.worksheet("Sheet1")
 except Exception as e:
-    st.error(f"Could not connect to Google Sheets. Please check your credentials and sheet name. Error: {e}")
+    st.error(f"🛑 **CRITICAL ERROR:** Could not connect to Google Sheets. Please check your service account credentials and ensure the sheet '{SHEET_NAME}' is shared with your service account's email address.")
+    st.error(f"**Details:** {e}")
     st.stop()
 
 
@@ -330,6 +336,7 @@ embedding_model = load_embedding_model()
 # Build vector store
 @st.cache_resource
 def build_vector_store():
+    # The file existence is already checked above, but we keep the try/except for other potential errors.
     try:
         with open(BIBLE_FILE, 'r', encoding='utf-8') as f:
             chunks = [line.strip() for line in f.read().split('\n\n') if line.strip()]
@@ -337,8 +344,9 @@ def build_vector_store():
         index = faiss.IndexFlatL2(embeddings.shape[1])
         index.add(np.array(embeddings, dtype='float32'))
         return index, chunks
-    except FileNotFoundError:
-        st.error(f"The memory file '{BIBLE_FILE}' was not found.")
+    except Exception as e:
+        st.error(f"🛑 **CRITICAL ERROR:** Failed to build the vector store from '{BIBLE_FILE}'.")
+        st.error(f"**Details:** {e}")
         return None, []
 
 vector_store, bible_chunks = build_vector_store()
@@ -348,7 +356,7 @@ def log_conversation_to_sheet(question, answer):
         row = [str(datetime.datetime.now()), question, answer]
         worksheet.append_row(row)
     except Exception as e:
-        st.warning(f"Failed to log conversation to Google Sheet: {e}")
+        st.warning(f"⚠️ **Warning:** Failed to log conversation to Google Sheet. The chat will continue, but this conversation turn will not be saved. Error: {e}")
 
 def get_persona_response(question, chat_history):
     history_context = "\n".join([f"{msg['role']}: {msg['content']}" for msg in chat_history])
@@ -402,7 +410,7 @@ st.markdown("""
         <p class="app-subtitle">"A sensible, matured and highly cognitive companion"</p>
         <div class="memory-status">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2zm1 12h2V2h-2v12zm-3 0V7H7v7h2zm-4 0v-3H2v3h2z"/></svg>
-            Memory Status: <span class="memory-online">Online</span> | Total Memories: 126
+            Memory Status: <span class="memory-online">Online</span> | Total Memories: """ + str(len(bible_chunks)) + """
         </div>
     </div>
     
