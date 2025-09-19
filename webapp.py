@@ -11,7 +11,7 @@ import json
 
 # --- Page Configuration ---
 st.set_page_config(
-    page_title="The Adaptive Loyalist AI",
+    page_title="ENtroP",
     page_icon="🤖",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -478,3 +478,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 """, unsafe_allow_html=True)
+
