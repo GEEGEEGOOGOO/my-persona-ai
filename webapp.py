@@ -1,4 +1,4 @@
-# webapp_streamlit_ui.py
+# webapp.py (fixed UI string quoting)
 import streamlit as st
 import google.generativeai as genai
 import os
@@ -99,58 +99,161 @@ def get_persona_response(question, chat_history):
     return response.text
 
 # --- UI: CSS and layout replaced to match the mock (visual only) ---
-st.markdown("""
-<style>
-  :root{
-    --bg:#0f1720;
-    --panel:#17202a;
-    --accent:#8b3330;
-    --muted:#9aa3ad;
-  }
-  *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-  body{margin:0;background:var(--bg);color:#e6eef6}
-  .container{max-width:1100px;margin:24px auto;padding:12px}
-  .header{display:flex;align-items:center;justify-content:center;flex-direction:column;margin-bottom:18px}
-  .title{margin:6px 0;font-size:28px;font-weight:700;color:#fff}
-  .subtitle{margin:0;color:var(--muted);font-size:13px}
-  .memory{background:#0b1a1f;padding:6px 10px;border-radius:8px;color:#9fe3c8;margin-top:10px;font-size:13px}
+# Use a triple-quoted string for CSS so Python won't mis-interpret braces or newlines.
+st.markdown(
+    """
+    <style>
+      :root{
+        --bg:#0f1720;
+        --panel:#17202a;
+        --accent:#8b3330;
+        --muted:#9aa3ad;
+      }
+      *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+      body{margin:0;background:var(--bg);color:#e6eef6}
+      .container{max-width:1100px;margin:24px auto;padding:12px}
+      .header{display:flex;align-items:center;justify-content:center;flex-direction:column;margin-bottom:18px}
+      .title{margin:6px 0;font-size:28px;font-weight:700;color:#fff}
+      .subtitle{margin:0;color:var(--muted);font-size:13px}
+      .memory{background:#0b1a1f;padding:6px 10px;border-radius:8px;color:#9fe3c8;margin-top:10px;font-size:13px}
 
-  .chat-card{background:linear-gradient(180deg, rgba(24,30,36,0.9), rgba(19,24,29,0.9));border:1px solid rgba(139,51,48,0.6);border-radius:8px;padding:14px;margin:18px 0}
-  .chat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--muted)}
-  .chat-window{height:420px;background:var(--panel);border-radius:4px;padding:12px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
-  .msg.user{float:right;background:rgba(139,51,48,0.95);padding:10px 12px;border-radius:6px;color:#fff;display:inline-block;margin:6px;clear:both;max-width:70%}
-  .msg.bot{float:left;background:rgba(0,0,0,0.45);padding:10px 12px;border-radius:6px;color:#ffd;display:inline-block;margin:6px;clear:both;max-width:70%}
-  .input-row{display:flex;margin-top:12px}
-  .input-row input{flex:1;padding:12px;border-radius:6px 0 0 6px;border:1px solid rgba(255,255,255,0.04);background:#1f2a33;color:#cdd9e6}
-  .input-row button{background:var(--accent);border:none;color:#fff;padding:0 18px;border-radius:0 6px 6px 0;cursor:pointer}
+      .chat-card{background:linear-gradient(180deg, rgba(24,30,36,0.9), rgba(19,24,29,0.9));border:1px solid rgba(139,51,48,0.6);border-radius:8px;padding:14px;margin:18px 0}
+      .chat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--muted)}
+      .chat-window{height:420px;background:var(--panel);border-radius:4px;padding:12px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+      .msg.user{float:right;background:rgba(139,51,48,0.95);padding:10px 12px;border-radius:6px;color:#fff;display:inline-block;margin:6px;clear:both;max-width:70%}
+      .msg.bot{float:left;background:rgba(0,0,0,0.45);padding:10px 12px;border-radius:6px;color:#ffd;display:inline-block;margin:6px;clear:both;max-width:70%}
+      .input-row{display:flex;margin-top:12px}
+      .input-row input{flex:1;padding:12px;border-radius:6px 0 0 6px;border:1px solid rgba(255,255,255,0.04);background:#1f2a33;color:#cdd9e6}
+      .input-row button{background:var(--accent);border:none;color:#fff;padding:0 18px;border-radius:0 6px 6px 0;cursor:pointer}
 
-  .features{display:flex;gap:18px;margin-top:22px}
-  .card{flex:1;background:transparent;border:1px solid rgba(255,255,255,0.05);padding:18px;border-radius:8px;min-height:110px}
-  .card h3{margin:0 0 6px 0;font-size:15px}
-  .card p{margin:0;color:var(--muted);font-size:13px}
-  .card.ghost{background:rgba(255,255,255,0.02)}
+      .features{display:flex;gap:18px;margin-top:22px}
+      .card{flex:1;background:transparent;border:1px solid rgba(255,255,255,0.05);padding:18px;border-radius:8px;min-height:110px}
+      .card h3{margin:0 0 6px 0;font-size:15px}
+      .card p{margin:0;color:var(--muted);font-size:13px}
+      .card.ghost{background:rgba(255,255,255,0.02)}
 
-  @media(max-width:820px){.features{flex-direction:column}}
-  /* Streamlit iframe fixes */
-  .css-1d391kg {padding: 0 !important;} /* sometimes outer padding, may vary by Streamlit version */
-</style>
-""", unsafe_allow_html=True)
+      @media(max-width:820px){.features{flex-direction:column}}
+      /* Streamlit iframe fixes */
+      .css-1d391kg {padding: 0 !important;}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # --- Main container header ---
 st.markdown('<div class="container">', unsafe_allow_html=True)
-st.markdown("""
-  <div class="header">
-    <div style="display:flex;align-items:center;gap:10px">
-      <div style="width:44px;height:44px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700">+</div>
-      <div style="text-align:left">
-        <div class="title">The Adaptive Loyalist AI</div>
-        <div class="subtitle">"A sensible, matured and highly cognitive companion"</div>
+
+# Header HTML: use f-string because we inject mem_count; this HTML has no braces that conflict with f-strings.
+st.markdown(
+    f"""
+    <div class="header">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:44px;height:44px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700">+</div>
+        <div style="text-align:left">
+          <div class="title">The Adaptive Loyalist AI</div>
+          <div class="subtitle">"A sensible, matured and highly cognitive companion"</div>
+        </div>
       </div>
+      <div class="memory">Memory Status: <strong style="color:#9fe3c8">Online</strong> | Total Memories: <strong style="color:#9fe3c8">{len(bible_chunks)}</strong></div>
     </div>
-    <div class="memory">Memory Status: <strong style="color:#9fe3c8">Online</strong> | Total Memories: <strong style="color:#9fe3c8">{mem_count}</strong></div>
-  </div>
-""".format(mem_count=len(bible_chunks)), unsafe_allow_html=True)
+    """,
+    unsafe_allow_html=True
+)
 
 # --- Chat card ---
-st.markdown('<div class="chat-card">', unsafe_allow_html=True)
-st.markdown('<div class="chat-header"><div>Chat</div><div style="color:var(--muted);font-size:18px;opacity:0.6">+</div
+# Use triple-quoted strings for the markup so it's robust.
+st.markdown(
+    """
+    <div class="chat-card">
+      <div class="chat-header">
+        <div>Chat</div>
+        <div style="color:var(--muted);font-size:18px;opacity:0.6">+</div>
+      </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# Initialize session state for messages (unchanged)
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Chat window (render messages)
+st.markdown('<div class="chat-window" id="chat-window">', unsafe_allow_html=True)
+st.markdown('<div style="clear:both"></div>', unsafe_allow_html=True)
+for message in st.session_state.messages:
+    if message["role"] == "user":
+        # Display user message (unchanged)
+        st.markdown(f'<div class="msg user">{message["content"]}</div>', unsafe_allow_html=True)
+    else:
+        st.markdown(f'<div class="msg bot">{message["content"]}</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)  # close chat-window
+
+# --- Chat input area ---
+# Keep using st.chat_input for identical backend behavior
+st.markdown(
+    """
+    <div style="margin-top:12px; display:flex; align-items:center; justify-content:center;">
+      <div style="width:100%; max-width:820px;">
+    """,
+    unsafe_allow_html=True
+)
+
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    if prompt := st.chat_input("What's buggin' ya?"):
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        with st.spinner("🤔 Thinking..."):
+            response = get_persona_response(prompt, st.session_state.messages)
+        st.session_state.messages.append({"role": "assistant", "content": response})
+        log_conversation_to_sheet(prompt, response)
+        # experimental_rerun is generally safer across versions
+        st.experimental_rerun()
+
+st.markdown(
+    """
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+# Close the chat-card container
+st.markdown('</div>', unsafe_allow_html=True)
+
+# --- Features section (visual only) ---
+st.markdown(
+    """
+    <div class="features" style="margin-top:22px;">
+      <div class="card">
+        <h3>🌐 Bilingual AI</h3>
+        <p>Fluent in both English and Hindi, responding naturally in the language you prefer.</p>
+      </div>
+      <div class="card">
+        <h3>🗂️ Context Aware</h3>
+        <p>Remembers both long-term knowledge and short-term conversation history.</p>
+      </div>
+      <div class="card ghost">
+        <h3>🔒 Privacy Focused</h3>
+        <p>Conversations are securely logged for improvement while respecting your privacy.</p>
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown('<div style="color:var(--muted);margin-top:12px;font-size:13px">Tip: This is a visual UI skin — backend logic and behavior unchanged.</div>', unsafe_allow_html=True)
+
+# Optional JS to auto-scroll chat-window to bottom.
+st.markdown(
+    """
+    <script>
+    (function() {
+        const chat = document.getElementById('chat-window');
+        if (chat) {
+            chat.scrollTop = chat.scrollHeight;
+        }
+    })();
+    </script>
+    """,
+    unsafe_allow_html=True
+)
