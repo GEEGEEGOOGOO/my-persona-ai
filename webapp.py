@@ -1,4 +1,4 @@
-# webapp.py (fixed UI string quoting)
+# webapp.py (fixed for Streamlit versions without experimental_rerun)
 import streamlit as st
 import google.generativeai as genai
 import os
@@ -99,7 +99,6 @@ def get_persona_response(question, chat_history):
     return response.text
 
 # --- UI: CSS and layout replaced to match the mock (visual only) ---
-# Use a triple-quoted string for CSS so Python won't mis-interpret braces or newlines.
 st.markdown(
     """
     <style>
@@ -143,7 +142,6 @@ st.markdown(
 # --- Main container header ---
 st.markdown('<div class="container">', unsafe_allow_html=True)
 
-# Header HTML: use f-string because we inject mem_count; this HTML has no braces that conflict with f-strings.
 st.markdown(
     f"""
     <div class="header">
@@ -161,7 +159,6 @@ st.markdown(
 )
 
 # --- Chat card ---
-# Use triple-quoted strings for the markup so it's robust.
 st.markdown(
     """
     <div class="chat-card">
@@ -182,14 +179,12 @@ st.markdown('<div class="chat-window" id="chat-window">', unsafe_allow_html=True
 st.markdown('<div style="clear:both"></div>', unsafe_allow_html=True)
 for message in st.session_state.messages:
     if message["role"] == "user":
-        # Display user message (unchanged)
         st.markdown(f'<div class="msg user">{message["content"]}</div>', unsafe_allow_html=True)
     else:
         st.markdown(f'<div class="msg bot">{message["content"]}</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)  # close chat-window
 
 # --- Chat input area ---
-# Keep using st.chat_input for identical backend behavior
 st.markdown(
     """
     <div style="margin-top:12px; display:flex; align-items:center; justify-content:center;">
@@ -206,8 +201,8 @@ with col2:
             response = get_persona_response(prompt, st.session_state.messages)
         st.session_state.messages.append({"role": "assistant", "content": response})
         log_conversation_to_sheet(prompt, response)
-        # experimental_rerun is generally safer across versions
-        st.experimental_rerun()
+        # Use st.stop() for compatibility where experimental_rerun is not available
+        st.stop()
 
 st.markdown(
     """
@@ -257,3 +252,4 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
