@@ -1,496 +1,234 @@
-import streamlit as st
-import google.generativeai as genai
-import os
-import datetime
-import faiss
-import numpy as np
-from sentence_transformers import SentenceTransformer
-import gspread
-from google.oauth2.service_account import Credentials
-import json
-import streamlit.components.v1 as components
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Adaptive Loyalist AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <style>
+        .bg-burgundy-50 { background-color: #1A0A0A; }
+        .bg-burgundy-100 { background-color: #2A1010; }
+        .bg-burgundy-200 { background-color: #3A1515; }
+        .bg-burgundy-300 { background-color: #5A1F1F; }
+        .bg-burgundy-400 { background-color: #7A2A2A; }
+        .bg-burgundy-500 { background-color: #9A3535; }
+        .bg-burgundy-600 { background-color: #BA4040; }
+        .bg-burgundy-700 { background-color: #DA4B4B; }
+        .text-burgundy-500 { color: #BA4040; }
+        .border-burgundy-300 { border-color: #5A1F1F; }
+        .hover\:bg-burgundy-100:hover { background-color: #3A1515; }
+    </style>
+</head>
+<body class="bg-gray-900 min-h-screen bg-opacity-90 text-gray-100">
+    <div class="max-w-4xl mx-auto p-6">
+        <!-- Header -->
+        <header class="mb-8 text-center" data-aos="fade-down">
+            <div class="flex justify-between items-start mb-4">
+                <div class="relative">
+                    <button id="settings-btn" class="p-2 rounded-full hover:bg-burgundy-100">
+                        <i data-feather="settings" class="w-6 h-6 text-burgundy-500"></i>
+                    </button>
+                    <div id="settings-menu" class="hidden absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 border border-burgundy-200">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-burgundy-50">Login</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-burgundy-50">Dark Mode</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-burgundy-50">Language</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-burgundy-50">Get Help</a>
+                    </div>
+                </div>
+                <div class="flex flex-col items-center flex-grow">
+                    <div class="flex items-center justify-center mb-4">
+                        <div class="relative w-12 h-12 mr-3">
+                            <div class="absolute inset-0 rounded-full bg-burgundy-400 animate-pulse"></div>
+                            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                                <svg class="w-8 h-8 text-white animate-flap" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M22 8s-1.5-2-4.5-2S13 8 13 8s-1.5-2-4.5-2S4 8 4 8s1.5 2 4.5 2c1.5 0 2.5-.5 3.5-1v6c-1 .5-2 1-3.5 1-3 0-4.5 2-4.5 2s1.5 2 4.5 2 4.5-2 4.5-2v-6c1 .5 2 1 3.5 1 3 0 4.5-2 4.5-2z" fill="#FFF"/>
+                                    <path d="M12 14v-6" stroke="#FFF" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <h1 class="text-4xl font-bold text-burgundy-600">The Adaptive Loyalist AI</h1>
+                    </div>
+                </div>
+                <div class="w-10"></div> <!-- Spacer to balance the layout -->
+            </div>
+            <p class="text-lg text-burgundy-400 italic">"A sensible, matured and highly cognitive companion"</p>
+            <div class="mt-4 p-3 bg-gray-800 bg-opacity-70 rounded-lg inline-block backdrop-blur-sm">
+                <span class="text-burgundy-400 font-medium">
+                    <i data-feather="database" class="inline mr-2 w-5 h-5"></i>
+                    Memory Status: <span class="text-green-700">Online</span> | Total Memories: <span id="memory-count">0</span>
+                </span>
+            </div>
+        </header>
 
-# --- Page Configuration ---
-st.set_page_config(
-    page_title="The Adaptive Loyalist AI",
-    page_icon="🤖",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
-
-# --- Custom CSS ---
-st.markdown("""
-<style>
-    /* Import Google Fonts */
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    
-    /* Hide Streamlit default elements */
-    .stApp > header[data-testid="stHeader"],
-    .stDeployButton,
-    .stDecoration,
-    #MainMenu,
-    footer {
-        display: none;
-    }
-    
-    .main .block-container {
-        padding: 0;
-        max-width: 100%;
-    }
-    
-    /* Custom color palette - Exact match */
-    :root {
-        --bg-primary: #111827;
-        --bg-secondary: #1F2937;
-        --bg-tertiary: #374151;
-        --chat-bg: #1F2937;
-        --text-primary: #FFFFFF;
-        --text-secondary: #D1D5DB;
-        --text-muted: #9CA3AF;
-        --accent-red: #DC2626;
-        --accent-green: #10B981;
-        --border-color: #4B5563;
-    }
-    
-    /* Global styles */
-    * {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    }
-    
-    /* Background */
-    body {
-        background-color: var(--bg-primary);
-        color: var(--text-primary);
-    }
-    
-    /* Main container */
-    .main-container {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 0 2rem;
-        min-height: 100vh;
-    }
-    
-    /* Top Bar */
-    .top-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 0;
-    }
-
-    .top-bar .settings-icon {
-        font-size: 1.5rem;
-        color: var(--text-muted);
-        cursor: pointer;
-        transition: color 0.2s;
-    }
-    .top-bar .settings-icon:hover {
-        color: var(--text-secondary);
-    }
-
-    .app-title-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    .app-logo {
-        width: 32px;
-        height: 32px;
-    }
-
-    .app-title {
-        color: var(--text-primary);
-        font-size: 1.75rem;
-        font-weight: 600;
-        margin: 0;
-    }
-    
-    /* Subtitle and Status Section */
-    .status-section {
-        text-align: center;
-        margin: 2rem 0;
-    }
-
-    .app-subtitle {
-        color: var(--text-secondary);
-        font-size: 1rem;
-        margin: 0 0 1rem 0;
-        font-weight: 400;
-    }
-    
-    .memory-status {
-        background-color: var(--bg-secondary);
-        padding: 0.5rem 1rem;
-        border-radius: 8px;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-        border: 1px solid var(--border-color);
-    }
-    
-    .memory-online {
-        color: var(--accent-green);
-        font-weight: 500;
-    }
-    
-    /* Chat Wrapper for the entire box */
-    .chat-wrapper {
-        background-color: var(--chat-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 12px;
-        display: flex;
-        flex-direction: column;
-        height: 65vh;
-        max-height: 700px;
-    }
-
-    .chat-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 1.5rem;
-        border-bottom: 1px solid var(--border-color);
-    }
-    
-    .chat-title {
-        color: var(--text-primary);
-        font-size: 1rem;
-        font-weight: 500;
-        margin: 0;
-    }
-    
-    .chat-add-btn {
-        background: none; border: none;
-        color: var(--text-muted);
-        font-size: 1.5rem;
-        cursor: pointer;
-        transition: color 0.2s;
-    }
-    .chat-add-btn:hover {
-        color: var(--text-secondary);
-    }
-
-    /* Chat container for messages */
-    .chat-container {
-        flex-grow: 1;
-        overflow-y: auto;
-        padding: 1.5rem;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .chat-placeholder {
-        margin: auto;
-        text-align: center;
-        color: var(--text-secondary);
-    }
-    
-    .chat-placeholder-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        opacity: 0.6;
-    }
-    
-    .chat-placeholder-text {
-        font-size: 1rem;
-        margin: 0;
-    }
-    
-    /* Messages */
-    .user-message, .assistant-message {
-        padding: 0.75rem 1.25rem;
-        border-radius: 12px;
-        margin: 0.25rem 0;
-        max-width: 80%;
-        word-wrap: break-word;
-        line-height: 1.5;
-    }
-
-    .user-message {
-        background-color: var(--accent-red);
-        color: white;
-        border-bottom-right-radius: 4px;
-        margin-left: auto;
-    }
-    
-    .assistant-message {
-        background-color: var(--bg-tertiary);
-        color: var(--text-primary);
-        border-bottom-left-radius: 4px;
-        margin-right: auto;
-    }
-    
-    /* Custom Input section */
-    .input-section {
-        padding: 1rem 1.5rem;
-        border-top: 1px solid var(--border-color);
-    }
-    
-    div[data-testid="stForm"] {
-        border: none !important;
-        padding: 0 !important;
-    }
-    
-    div[data-testid="stForm"] div[data-testid="stHorizontalBlock"] {
-        gap: 0.75rem;
-    }
-
-    div[data-testid="stTextInput"] > div > div > input {
-        background-color: var(--bg-primary) !important;
-        border: 1px solid var(--border-color) !important;
-        border-radius: 8px !important;
-        color: var(--text-primary) !important;
-        height: 50px;
-        padding-left: 1rem;
-        transition: border-color 0.2s;
-    }
-    div[data-testid="stTextInput"] > div > div > input:focus {
-        border-color: var(--accent-red) !important;
-        box-shadow: none !important;
-    }
-
-    div[data-testid="stFormSubmitButton"] > button {
-        background-color: var(--accent-red) !important;
-        border: none !important;
-        border-radius: 8px !important;
-        color: white !important;
-        font-weight: 500 !important;
-        width: 100%;
-        height: 50px;
-        transition: background-color 0.2s;
-    }
-    div[data-testid="stFormSubmitButton"] > button:hover {
-        background-color: #B91C1C !important;
-    }
-    div[data-testid="stFormSubmitButton"] > button > div > p::before {
-        content: '➢';
-        margin-right: 0.5rem;
-        opacity: 0.8;
-    }
-    
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: var(--chat-bg); }
-    ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--border-color); }
-</style>
-""", unsafe_allow_html=True)
-
-# --- Configuration ---
-# Ensure you have these secrets in your Streamlit Cloud configuration
-GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY")
-GCS_SECRETS_JSON = st.secrets.get("GCS_SECRETS_JSON")
-
-if not GEMINI_API_KEY or not GCS_SECRETS_JSON:
-    st.error("🛑 **CRITICAL ERROR:** Missing secrets! Please ensure `GEMINI_API_KEY` and `GCS_SECRETS_JSON` are correctly set in your Streamlit secrets.")
-    st.stop()
-    
-BIBLE_FILE = "Character_Bible.txt"
-SHEET_NAME = "AI_Chat_Logs"
-
-# --- File Check ---
-if not os.path.exists(BIBLE_FILE):
-    st.error(f"🛑 **CRITICAL ERROR:** The memory file (`{BIBLE_FILE}`) could not be found. Please make sure it is uploaded and in the same directory as the `app.py` file.")
-    st.stop()
-
-# --- Initialization ---
-# Configure the Gemini AI model
-genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
-
-# Configure Google Sheets access
-@st.cache_resource
-def get_gspread_client():
-    scopes = [
-        "https://www.googleapis.com/auth/spreadsheets",
-        "https://www.googleapis.com/auth/drive"
-    ]
-    creds_info = json.loads(GCS_SECRETS_JSON)
-    creds = Credentials.from_service_account_info(creds_info, scopes=scopes)
-    client = gspread.authorize(creds)
-    return client
-
-try:
-    gs_client = get_gspread_client()
-    spreadsheet = gs_client.open(SHEET_NAME)
-    worksheet = spreadsheet.worksheet("Sheet1")
-except Exception as e:
-    st.error(f"🛑 **CRITICAL ERROR:** Could not connect to Google Sheets. Please check your service account credentials and ensure the sheet '{SHEET_NAME}' is shared with your service account's email address.")
-    st.error(f"**Details:** {e}")
-    st.stop()
-
-
-# Load the sentence transformer model
-@st.cache_resource
-def load_embedding_model():
-    return SentenceTransformer('all-MiniLM-L6-v2')
-
-embedding_model = load_embedding_model()
-
-# Build vector store
-@st.cache_resource
-def build_vector_store():
-    # The file existence is already checked above, but we keep the try/except for other potential errors.
-    try:
-        with open(BIBLE_FILE, 'r', encoding='utf-8') as f:
-            chunks = [line.strip() for line in f.read().split('\n\n') if line.strip()]
-        embeddings = embedding_model.encode(chunks)
-        index = faiss.IndexFlatL2(embeddings.shape[1])
-        index.add(np.array(embeddings, dtype='float32'))
-        return index, chunks
-    except Exception as e:
-        st.error(f"🛑 **CRITICAL ERROR:** Failed to build the vector store from '{BIBLE_FILE}'.")
-        st.error(f"**Details:** {e}")
-        return None, []
-
-vector_store, bible_chunks = build_vector_store()
-
-def log_conversation_to_sheet(question, answer):
-    try:
-        row = [str(datetime.datetime.now()), question, answer]
-        worksheet.append_row(row)
-    except Exception as e:
-        st.warning(f"⚠️ **Warning:** Failed to log conversation to Google Sheet. The chat will continue, but this conversation turn will not be saved. Error: {e}")
-
-def get_persona_response(question, chat_history):
-    history_context = "\n".join([f"{msg['role']}: {msg['content']}" for msg in chat_history])
-    if vector_store:
-        question_embedding = embedding_model.encode([question])
-        distances, indices = vector_store.search(np.array(question_embedding, dtype='float32'), 5)
-        retrieved_memories = [bible_chunks[i] for i in indices[0]]
-        memory_context = "\n- ".join(retrieved_memories)
-    else:
-        memory_context = "No memories available."
-
-    final_prompt = f"""
-    You are A sensible , matured and highly cognitive individual , an AI persona of a 22 year old indian boy who made you in his reflection. Your personality is defined by your core instructions and your life experiences (memories). You MUST follow all instructions.
-
-    [LANGUAGE INSTRUCTION]
-    Your default language is conversation English(US). However, you are also fluent in Hindi and Hinglish. If the user asks you to speak in Hindi or translate something, you should do so naturally. Do not apologize for not knowing the language; you are fully bilingual.
-
-    [MEMORY INSTRUCTION]
-    You have two types of memory: your long-term memories (life experiences) and the short-term chat history. You must consider BOTH to understand the full context and respond appropriately.
-
-    [LONG-TERM MEMORIES - Relevant for this specific moment]
-    - {memory_context}
-
-    [SHORT-TERM MEMORY - The last few turns of our current conversation]
-    {history_context}
-
-    [USER'S CURRENT QUESTION]
-    user: {question}
-
-    [YOUR RESPONSE]
-    assistant:
-    """
-    response = model.generate_content(final_prompt)
-    return response.text
-
-# --- Main App Layout ---
-st.markdown("""
-<div class="main-container">
-    <!-- Top Bar -->
-    <div class="top-bar">
-        <div class="settings-icon">⚙️</div>
-        <div class="app-title-wrapper">
-            <img src="https://raw.githubusercontent.com/google/material-design-icons/master/src/social/whatshot/materialicons/24px.svg" class="app-logo" style="filter: invert(1)"/>
-            <h1 class="app-title">The Adaptive Loyalist AI</h1>
+        <!-- Chat Header -->
+        <div class="flex items-center justify-between border-b border-burgundy-200 mb-6">
+            <button class="tab-btn active px-6 py-3 text-burgundy-600 font-medium border-b-2 border-burgundy-500 flex items-center">
+                Chat
+            </button>
+            <button id="new-chat-btn" class="p-2 rounded-full hover:bg-burgundy-100 text-burgundy-500">
+                <i data-feather="plus" class="w-5 h-5"></i>
+            </button>
         </div>
-        <div></div> <!-- Empty div for spacing -->
-    </div>
-    
-    <!-- Subtitle and Status Section -->
-    <div class="status-section">
-        <p class="app-subtitle">"A sensible, matured and highly cognitive companion"</p>
-        <div class="memory-status">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2zm1 12h2V2h-2v12zm-3 0V7H7v7h2zm-4 0v-3H2v3h2z"/></svg>
-            Memory Status: <span class="memory-online">Online</span> | Total Memories: """ + str(len(bible_chunks)) + """
+
+        <!-- Chat Container -->
+        <div id="chat-tab" class="tab-content bg-gray-800 bg-opacity-90 rounded-xl shadow-lg overflow-hidden border border-burgundy-300 backdrop-blur-sm" data-aos="fade-up">
+            <!-- Chat Messages -->
+            <div id="chat-container" class="h-96 p-4 overflow-y-auto space-y-4">
+                <!-- Messages will be inserted here by JavaScript -->
+                <div class="text-center py-10 text-burgundy-300">
+                    <i data-feather="message-square" class="w-12 h-12 mx-auto mb-3"></i>
+                    <p>Start a conversation with your AI companion</p>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="border-t border-burgundy-200 p-4 bg-burgundy-50 bg-opacity-70 backdrop-blur-sm">
+                <div class="flex">
+                    <input 
+                        id="user-input" 
+                        type="text" 
+                        placeholder="What's buggin' ya?" 
+                        class="flex-1 px-4 py-3 rounded-l-lg border border-burgundy-300 focus:outline-none focus:ring-2 focus:ring-burgundy-400 bg-gray-700 text-white placeholder-gray-400"
+                    >
+                    <button 
+                        id="send-button" 
+                        class="bg-burgundy-500 text-white px-6 py-3 rounded-r-lg hover:bg-burgundy-600 transition-colors flex items-center"
+                    >
+                        <i data-feather="send" class="mr-2 w-5 h-5"></i> Send
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6" data-aos="fade-up">
+            <div class="bg-gray-800 bg-opacity-90 p-6 rounded-lg shadow border border-burgundy-200 hover:shadow-lg transition-all backdrop-blur-sm">
+                <div class="text-burgundy-500 mb-4">
+                    <i data-feather="globe" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-burgundy-600 mb-2">Bilingual AI</h3>
+                <p class="text-gray-300">Fluent in both English and Hindi, responding naturally in the language you prefer.</p>
+            </div>
+            <div class="bg-gray-800 bg-opacity-90 p-6 rounded-lg shadow border border-burgundy-200 hover:shadow-lg transition-all backdrop-blur-sm">
+                <div class="text-burgundy-500 mb-4">
+                    <i data-feather="book" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-burgundy-600 mb-2">Context Aware</h3>
+                <p class="text-gray-300">Remembers both long-term knowledge and short-term conversation history.</p>
+            </div>
+            <div class="bg-white bg-opacity-90 p-6 rounded-lg shadow border border-burgundy-200 hover:shadow-lg transition-all backdrop-blur-sm">
+                <div class="text-burgundy-500 mb-4">
+                    <i data-feather="shield" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-burgundy-600 mb-2">Privacy Focused</h3>
+                <p class="text-gray-300">Conversations are securely logged for improvement while respecting your privacy.</p>
+            </div>
         </div>
     </div>
-""", unsafe_allow_html=True)
 
 
-# --- About Section Expander ---
-with st.expander("ℹ️ About this App"):
-    try:
-        with open("about.html", "r", encoding="utf-8") as f:
-            about_html = f.read()
-        components.html(about_html, height=250, scrolling=True)
-    except FileNotFoundError:
-        st.warning("about.html file not found.")
+    <script>
+        // Initialize AOS and Feather Icons
+        // Settings menu toggle
+        document.getElementById('settings-btn').addEventListener('click', function() {
+            const menu = document.getElementById('settings-menu');
+            menu.classList.toggle('hidden');
+        });
 
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const settingsBtn = document.getElementById('settings-btn');
+            const settingsMenu = document.getElementById('settings-menu');
+            if (!settingsBtn.contains(event.target) && !settingsMenu.contains(event.target)) {
+                settingsMenu.classList.add('hidden');
+            }
+        });
 
-st.markdown("""
-    <!-- Chat Wrapper -->
-    <div class="chat-wrapper">
-        <div class="chat-header">
-            <h2 class="chat-title">Chat</h2>
-            <button class="chat-add-btn">+</button>
-        </div>
-        <div class="chat-container" id="chat-container">
-""", unsafe_allow_html=True)
+        // New chat button functionality
+        document.getElementById('new-chat-btn').addEventListener('click', function() {
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.innerHTML = `
+                <div class="text-center py-10 text-burgundy-300">
+                    <i data-feather="message-square" class="w-12 h-12 mx-auto mb-3"></i>
+                    <p>Start a new conversation with your AI companion</p>
+                </div>
+            `;
+            feather.replace();
+        });
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out'
+        });
 
-# Initialize chat history
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# Display messages or placeholder
-if not st.session_state.messages:
-    st.markdown("""
-    <div class="chat-placeholder">
-        <div class="chat-placeholder-icon">💬</div>
-        <p class="chat-placeholder-text">Start a conversation with your AI companion</p>
-    </div>
-    """, unsafe_allow_html=True)
-else:
-    for message in st.session_state.messages:
-        if message["role"] == "user":
-            st.markdown(f'<div class="user-message">{message["content"]}</div>', unsafe_allow_html=True)
-        else:
-            st.markdown(f'<div class="assistant-message">{message["content"]}</div>', unsafe_allow_html=True)
-
-# Close chat-container div
-st.markdown('</div>', unsafe_allow_html=True)
-
-
-# --- Custom Input Form ---
-st.markdown('<div class="input-section">', unsafe_allow_html=True)
-
-with st.form("chat_form", clear_on_submit=True):
-    col1, col2 = st.columns([1, 0.15])
-    with col1:
-        prompt = st.text_input(
-            "prompt", 
-            placeholder="What's buggin' ya?", 
-            label_visibility="collapsed"
-        )
-    with col2:
-        submitted = st.form_submit_button("Send")
-
-if submitted and prompt:
-    # Add user message to chat history
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    
-    # Generate and display assistant response
-    with st.spinner("🤔 Thinking..."):
-        response = get_persona_response(prompt, st.session_state.messages)
-    
-    st.session_state.messages.append({"role": "assistant", "content": response})
-    
-    # Log the conversation
-    log_conversation_to_sheet(prompt, response)
-    
-    # Rerun to update the display
-    st.rerun()
-
-st.markdown('</div>', unsafe_allow_html=True) # close input-section
-st.markdown('</div>', unsafe_allow_html=True) # close chat-wrapper
-st.markdown('</div>', unsafe_allow_html=True) # close main-container
-
+        // Add custom flap animation
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes flap {
+                0% { transform: translateY(0) rotate(0deg); }
+                50% { transform: translateY(-5px) rotate(10deg); }
+                100% { transform: translateY(0) rotate(0deg); }
+            }
+            .animate-flap {
+                animation: flap 0.5s infinite alternate;
+            }
+        `;
+        document.head.appendChild(style);
+        feather.replace();
+        
+        // Set memory count (simulated)
+        document.getElementById('memory-count').textContent = '256';
+        
+        // Chat functionality (simulated)
+        document.getElementById('send-button').addEventListener('click', function() {
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            
+            if (message) {
+                // Add user message
+                addMessage('user', message);
+                input.value = '';
+                
+                // Simulate AI response after a delay
+                setTimeout(() => {
+                    const responses = [
+                        "I understand what you're saying. Let me think about that...",
+                        "That's an interesting perspective. Here's what I think...",
+                        "Based on my knowledge and our previous conversation, I'd say...",
+                        "I appreciate you sharing that with me. My thoughts are..."
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    addMessage('assistant', randomResponse);
+                }, 1000);
+            }
+        });
+        
+        function addMessage(role, content) {
+            const chatContainer = document.getElementById('chat-container');
+            
+            // Clear initial placeholder if it exists
+            if (chatContainer.querySelector('.text-center')) {
+                chatContainer.innerHTML = '';
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+            
+            const bubble = document.createElement('div');
+            bubble.className = `max-w-xs md:max-w-md rounded-lg p-4 ${
+                role === 'user' 
+                    ? 'bg-burgundy-500 text-white rounded-br-none' 
+                    : 'bg-burgundy-100 text-burgundy-700 rounded-bl-none'
+            }`;
+            bubble.textContent = content;
+            
+            messageDiv.appendChild(bubble);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    </script>
+</body>
+</html>
