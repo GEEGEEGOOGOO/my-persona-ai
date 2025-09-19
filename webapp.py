@@ -101,192 +101,120 @@ def get_persona_response(question, chat_history):
 # -----------------------------
 # UI/CSS (visual skin only)
 # -----------------------------
+# -----------------------------
+# Updated UI/CSS skin (paste this over your older UI block)
+# -----------------------------
 st.markdown(
     """
     <style>
+    /* Force Streamlit to center and constrain the block-container so our .app-container actually limits width */
+    /* These selectors are intentionally broad to work across Streamlit versions. */
+    .reportview-container .main, .main, .streamlit-expander {
+        display: flex !important;
+        justify-content: center !important;
+    }
+    .block-container {
+        max-width: 980px !important;
+        padding-left: 0rem !important;
+        padding-right: 0rem !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+
     /* Base variables */
     :root{
       --page-bg: #0f1720;
       --card-bg: #17232b;
       --panel-bg: #182530;
-      --accent: #8b3330;       /* burgundy accent */
+      --accent: #8b3330;
       --muted: #9aa3ad;
       --text: #e6eef6;
       --subtle: rgba(255,255,255,0.03);
     }
 
-    /* Ensure app background */
+    /* Page background */
     .stApp {
-      background: var(--page-bg);
-      color: var(--text);
+      background: var(--page-bg) !important;
+      color: var(--text) !important;
     }
 
-    /* central container to mimic mock's max width */
+    /* Our constrained app container that actually centers */
     .app-container {
+      width: 100%;
       max-width: 980px;
-      margin: 28px auto;
+      margin: 22px auto;
+      box-sizing: border-box;
+      padding-left: 18px;
+      padding-right: 18px;
     }
 
-    /* Header */
-    .mock-header {
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-      gap:8px;
-      margin-bottom:18px;
-    }
-    .mock-title {
-      display:flex;
-      align-items:center;
-      gap:12px;
-      font-weight:700;
-      font-size:28px;
-      color:var(--text);
-    }
-    .logo-dot {
-      width:44px;height:44px;border-radius:50%;
-      background:var(--accent); display:flex;align-items:center;justify-content:center;
-      color:white;font-weight:700;box-shadow:0 3px 10px rgba(0,0,0,0.6);
-    }
-    .mock-sub {
-      color:var(--muted);
-      font-size:13px;
-      margin-top:2px;
-    }
-    .memory-pill {
-      margin-top:8px;
-      background:#0b1416;
-      padding:6px 10px;border-radius:8px;
-      color:#9fe3c8;font-size:13px;border:1px solid rgba(9, 150, 108, 0.06);
-    }
+    .mock-header { text-align: center; margin-bottom: 14px; }
+    .mock-title { display:inline-flex; align-items:center; gap:12px; font-weight:700; font-size:28px; color:var(--text); }
+    .logo-dot { width:44px; height:44px; border-radius:50%; background:var(--accent); display:inline-flex; align-items:center; justify-content:center; color:#fff; font-weight:700; }
+    .mock-sub { color:var(--muted); font-size:13px; margin-top:6px; }
+    .memory-pill { display:inline-block; margin-top:8px; background:#071313; padding:6px 10px; border-radius:8px; color:#9fe3c8; font-size:13px; border:1px solid rgba(9,150,108,0.06); }
 
     /* Chat card */
     .chat-card {
+      width: 100%;
       background: linear-gradient(180deg, rgba(24,28,32,0.7), rgba(19,24,29,0.6));
       border-radius:10px;
       border:1px solid rgba(139,51,48,0.45);
-      padding:14px;
+      padding:12px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+      box-sizing:border-box;
     }
-    .chat-card .chat-title {
-      color:var(--muted);
-      padding:6px 8px;
-      border-radius:6px;
-      margin-bottom:10px;
-      font-size:15px;
-    }
+    .chat-title { color:var(--muted); padding:6px 8px; border-radius:6px; margin-bottom:8px; font-size:15px; }
 
-    /* inner panel */
+    /* Panel and relative wrapper (ensure chips are positioned relative to panel) */
+    .chat-panel-wrapper { position: relative; }
     .chat-panel {
       background: var(--panel-bg);
-      height:400px;
+      height: 400px;
       border-radius:6px;
-      padding:14px;
+      padding:14px 24px 24px 24px;
       overflow:auto;
       border:1px solid var(--subtle);
+      box-sizing: border-box;
+      /* keep contents inside panel */
+      display:block;
     }
 
     /* message bubbles */
-    .bubble {
-      display:inline-block;
-      padding:10px 14px;
-      border-radius:999px;
-      margin:8px 8px;
-      max-width:70%;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.45);
-      font-size:14px;
-      line-height:1.25;
-    }
-    .bubble.user {
-      background: var(--accent);
-      color: white;
-      float:right;
-      clear:both;
-      border-bottom-right-radius: 18px;
-    }
-    .bubble.bot {
-      background: rgba(0,0,0,0.55);
-      color: #fff5d1;
-      float:left;
-      clear:both;
-      border-bottom-left-radius: 18px;
-    }
+    .bubble { display:inline-block; padding:10px 14px; border-radius:999px; margin:8px 8px; max-width:70%; box-shadow:0 4px 10px rgba(0,0,0,0.45); font-size:14px; line-height:1.25; }
+    .bubble.user { background: var(--accent); color: #fff; float:right; clear:both; border-bottom-right-radius: 18px; }
+    .bubble.bot  { background: rgba(0,0,0,0.55); color: #fff5d1; float:left; clear:both; border-bottom-left-radius: 18px; }
 
-    /* quick reply chips on right inside panel */
-    .chips {
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      position: absolute;
-      right: 28px;
-      top: 72px;
-    }
-    .chip {
-      background: var(--accent);
-      color:white;
-      padding:8px 10px;
-      border-radius:8px;
-      font-size:13px;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.35);
-      cursor:pointer;
-      border: 1px solid rgba(0,0,0,0.4);
-    }
+    /* chips now absolutely positioned inside the panel wrapper (right column inside the card) */
+    .chips { position:absolute; right:12px; top:60px; display:flex; flex-direction:column; gap:10px; z-index:5; }
+    .chip { background:var(--accent); color:white; padding:8px 10px; border-radius:8px; font-size:13px; box-shadow:0 3px 6px rgba(0,0,0,0.35); cursor:pointer; border:1px solid rgba(0,0,0,0.4); }
 
-    /* Input bar container */
-    .input-row {
-      display:flex;
-      gap:8px;
-      margin-top:12px;
-      align-items:center;
-    }
+    /* Input area — placed under the panel and constrained by the card width */
+    .input-row { display:flex; gap:8px; margin-top:12px; align-items:center; }
     .input-field {
       flex:1;
-      background: #1f2a33;
+      background:#1f2a33;
       padding:12px 16px;
-      border-radius:8px;
-      border:1px solid rgba(255,255,255,0.04);
+      border-radius:999px;
+      border:1px solid rgba(139,51,48,0.45);
       color:var(--text);
       font-size:15px;
-      min-height:48px;
+      min-height:46px;
+      box-sizing:border-box;
     }
-    .send-btn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius:8px;
-      padding:10px 16px;
-      min-width:86px;
-      font-weight:600;
-      cursor:pointer;
-      box-shadow: 0 6px 18px rgba(139,51,48,0.16);
-    }
-    .send-btn:hover{ transform: translateY(-2px); }
+    .send-btn { background:var(--accent); color:#fff; border:none; border-radius:999px; padding:10px 18px; min-width:86px; font-weight:700; cursor:pointer; box-shadow:0 6px 18px rgba(139,51,48,0.16); }
 
-    /* Features row */
-    .features {
-      display:flex;
-      gap:18px;
-      margin-top:24px;
-    }
-    .feature {
-      flex:1;
-      background: rgba(255,255,255,0.02);
-      border-radius:10px;
-      padding:16px;
-      border:1px solid rgba(255,255,255,0.03);
-      min-height:100px;
-    }
-    .feature h4 { margin:0 0 8px 0; color:var(--text); font-size:15px; }
+    /* features row below */
+    .features { display:flex; gap:18px; margin-top:22px; }
+    .feature { flex:1; background: rgba(255,255,255,0.02); border-radius:10px; padding:16px; border:1px solid rgba(255,255,255,0.03); min-height:100px; }
+    .feature h4 { margin:0 0 6px 0; color:var(--text); font-size:15px; }
     .feature p { margin:0; color:var(--muted); font-size:13px; }
 
-    /* small tip */
     .tip { color:var(--muted); margin-top:12px; font-size:13px; }
 
-    /* responsive */
     @media (max-width: 900px) {
+      .chat-panel { height: 320px; padding:12px; }
       .chips { display:none; }
-      .chat-panel { height: 320px; }
       .features { flex-direction:column; }
     }
     </style>
@@ -294,19 +222,13 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# -----------------------------
-# Page markup (safe triple-quoted strings)
-# -----------------------------
+# ---------- page markup that lives inside the constrained .app-container ----------
 st.markdown('<div class="app-container">', unsafe_allow_html=True)
 
-# Header
 st.markdown(
     f"""
     <div class="mock-header">
-      <div class="mock-title">
-        <div class="logo-dot">+</div>
-        <div>The Adaptive Loyalist AI</div>
-      </div>
+      <div class="mock-title"><div class="logo-dot">+</div><div>The Adaptive Loyalist AI</div></div>
       <div class="mock-sub">"A sensible, matured and highly cognitive companion"</div>
       <div class="memory-pill">Memory Status: <strong style="color:#9fe3c8">Online</strong> | Total Memories: <strong style="color:#9fe3c8">{len(bible_chunks)}</strong></div>
     </div>
@@ -314,43 +236,28 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Chat card start
-st.markdown(
-    """
-    <div class="chat-card">
-      <div class="chat-title">Chat</div>
-    """,
-    unsafe_allow_html=True
-)
-
-# Chat panel container
-st.markdown('<div style="position:relative">', unsafe_allow_html=True)  # wrapper to place chips absolutely
+# Chat card + wrapper
+st.markdown('<div class="chat-card">', unsafe_allow_html=True)
+st.markdown('<div class="chat-title">Chat</div>', unsafe_allow_html=True)
+st.markdown('<div class="chat-panel-wrapper">', unsafe_allow_html=True)
 st.markdown('<div class="chat-panel" id="chat-panel">', unsafe_allow_html=True)
 
-# initialize session state for messages
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# Render previous messages (bubbles)
-# We'll render them as HTML within the chat panel so styles apply consistently.
+# build messages html so bubbles stay inside the panel
 messages_html = ""
-for message in st.session_state.messages:
+for message in st.session_state.get("messages", []):
+    safe_text = (message["content"].replace("&","&amp;").replace("<","&lt;").replace(">","&gt;"))
     if message["role"] == "user":
-        safe_text = message["content"].replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
         messages_html += f'<div class="bubble user">{safe_text}</div>'
     else:
-        safe_text = message["content"].replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
         messages_html += f'<div class="bubble bot">{safe_text}</div>'
 
-# If empty, add a placeholder bot bubble to match the mock.
 if messages_html.strip() == "":
     messages_html = '<div class="bubble bot">I appreciate you sharing that with me. My thoughts are...</div>'
 
 st.markdown(messages_html, unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)  # close chat-panel
 
-# Quick reply chips (right side)
-# List a few example chips (they won't automatically send; user can click later if you wire JS)
+# chips placed inside wrapper so they float over the panel on the right
 st.markdown(
     """
     <div class="chips">
@@ -363,78 +270,54 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown('</div>', unsafe_allow_html=True)  # close wrapper (position relative)
+st.markdown('</div>', unsafe_allow_html=True)  # close chat-panel-wrapper
 
-# Input area:
-# We keep the original st.chat_input to preserve streamlit's chat behavior, but we render a styled container around it.
-st.markdown(
-    """
-    <div style="margin-top:12px;">
-      <div style="display:flex;align-items:center;justify-content:center">
-        <div style="width:100%;max-width:920px;">
-    """,
-    unsafe_allow_html=True
-)
+# input area (keeps original st.chat_input for behavior)
+st.markdown('<div style="margin-top:12px">', unsafe_allow_html=True)
+st.markdown('<div style="display:flex;align-items:center;justify-content:center"><div style="width:100%;max-width:920px">', unsafe_allow_html=True)
 
 col1, col2, col3 = st.columns([1, 8, 1])
 with col2:
-    # Using st.chat_input to preserve chat behavior exactly as your original logic required.
+    # preserve exact streamlit chat_input behaviour
     if prompt := st.chat_input("What's buggin' ya?"):
-        st.session_state.messages.append({"role": "user", "content": prompt})
+        st.session_state.messages.append({"role":"user","content":prompt})
         with st.spinner("🤔 Thinking..."):
             response = get_persona_response(prompt, st.session_state.messages)
-        st.session_state.messages.append({"role": "assistant", "content": response})
+        st.session_state.messages.append({"role":"assistant","content":response})
         log_conversation_to_sheet(prompt, response)
-        # Stop to ensure the app refreshes - compatible with many streamlit versions
         st.stop()
 
-st.markdown(
-    """
-        </div>
-      </div>
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown('</div></div></div>', unsafe_allow_html=True)  # close input container
 
-# Close chat-card
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)  # close chat-card
 
-# Feature cards
+# features and tip
 st.markdown(
     """
     <div class="features">
-      <div class="feature">
-        <h4>🌐 Bilingual AI</h4>
-        <p>Fluent in both English and Hindi, responding naturally in the language you prefer.</p>
-      </div>
-      <div class="feature">
-        <h4>🗂️ Context Aware</h4>
-        <p>Remembers both long-term knowledge and short-term conversation history.</p>
-      </div>
-      <div class="feature">
-        <h4>🔒 Privacy Focused</h4>
-        <p>Conversations are securely logged for improvement while respecting your privacy.</p>
-      </div>
+      <div class="feature"><h4>🌐 Bilingual AI</h4><p>Fluent in both English and Hindi, responding naturally in the language you prefer.</p></div>
+      <div class="feature"><h4>🗂️ Context Aware</h4><p>Remembers both long-term knowledge and short-term conversation history.</p></div>
+      <div class="feature"><h4>🔒 Privacy Focused</h4><p>Conversations are securely logged for improvement while respecting your privacy.</p></div>
     </div>
     <div class="tip">Tip: This is a UI skin — backend logic and behavior unchanged.</div>
     """,
     unsafe_allow_html=True
 )
 
-# Auto-scroll: attempt to scroll the panel to bottom on load (best-effort)
+# close app container
+st.markdown('</div>', unsafe_allow_html=True)
+
+# ensure the panel auto-scrolls to bottom (best-effort)
 st.markdown(
     """
     <script>
-    (function() {
-      try {
-        const panel = document.getElementById('chat-panel');
-        if (panel) panel.scrollTop = panel.scrollHeight;
-      } catch(e){}
+    (function(){
+      const p = document.getElementById('chat-panel');
+      if(p) p.scrollTop = p.scrollHeight;
     })();
     </script>
     """,
     unsafe_allow_html=True
 )
 
-st.markdown('</div>', unsafe_allow_html=True)  # close app-container
+
