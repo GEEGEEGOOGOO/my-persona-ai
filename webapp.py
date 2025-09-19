@@ -395,7 +395,7 @@ def get_persona_response(question, chat_history):
 st.markdown(f"""
 <div class="custom-header">
     <h1>
-        <span class="bounce-animation">🌪️</span> The Adaptive Loyalist AI
+        <span class="wiggle-animation">⚛</span> Bliss
     </h1>
     <p class="subtitle">"A sensible, matured and highly cognitive companion"</p>
     <div class="memory-status">
@@ -478,3 +478,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 """, unsafe_allow_html=True)
+
