@@ -1,4 +1,4 @@
-# webapp.py (fixed for Streamlit versions without experimental_rerun)
+# webapp.py
 import streamlit as st
 import google.generativeai as genai
 import os
@@ -98,158 +98,343 @@ def get_persona_response(question, chat_history):
     response = model.generate_content(final_prompt)
     return response.text
 
-# --- UI: CSS and layout replaced to match the mock (visual only) ---
+# -----------------------------
+# UI/CSS (visual skin only)
+# -----------------------------
 st.markdown(
     """
     <style>
-      :root{
-        --bg:#0f1720;
-        --panel:#17202a;
-        --accent:#8b3330;
-        --muted:#9aa3ad;
-      }
-      *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
-      body{margin:0;background:var(--bg);color:#e6eef6}
-      .container{max-width:1100px;margin:24px auto;padding:12px}
-      .header{display:flex;align-items:center;justify-content:center;flex-direction:column;margin-bottom:18px}
-      .title{margin:6px 0;font-size:28px;font-weight:700;color:#fff}
-      .subtitle{margin:0;color:var(--muted);font-size:13px}
-      .memory{background:#0b1a1f;padding:6px 10px;border-radius:8px;color:#9fe3c8;margin-top:10px;font-size:13px}
+    /* Base variables */
+    :root{
+      --page-bg: #0f1720;
+      --card-bg: #17232b;
+      --panel-bg: #182530;
+      --accent: #8b3330;       /* burgundy accent */
+      --muted: #9aa3ad;
+      --text: #e6eef6;
+      --subtle: rgba(255,255,255,0.03);
+    }
 
-      .chat-card{background:linear-gradient(180deg, rgba(24,30,36,0.9), rgba(19,24,29,0.9));border:1px solid rgba(139,51,48,0.6);border-radius:8px;padding:14px;margin:18px 0}
-      .chat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--muted)}
-      .chat-window{height:420px;background:var(--panel);border-radius:4px;padding:12px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
-      .msg.user{float:right;background:rgba(139,51,48,0.95);padding:10px 12px;border-radius:6px;color:#fff;display:inline-block;margin:6px;clear:both;max-width:70%}
-      .msg.bot{float:left;background:rgba(0,0,0,0.45);padding:10px 12px;border-radius:6px;color:#ffd;display:inline-block;margin:6px;clear:both;max-width:70%}
-      .input-row{display:flex;margin-top:12px}
-      .input-row input{flex:1;padding:12px;border-radius:6px 0 0 6px;border:1px solid rgba(255,255,255,0.04);background:#1f2a33;color:#cdd9e6}
-      .input-row button{background:var(--accent);border:none;color:#fff;padding:0 18px;border-radius:0 6px 6px 0;cursor:pointer}
+    /* Ensure app background */
+    .stApp {
+      background: var(--page-bg);
+      color: var(--text);
+    }
 
-      .features{display:flex;gap:18px;margin-top:22px}
-      .card{flex:1;background:transparent;border:1px solid rgba(255,255,255,0.05);padding:18px;border-radius:8px;min-height:110px}
-      .card h3{margin:0 0 6px 0;font-size:15px}
-      .card p{margin:0;color:var(--muted);font-size:13px}
-      .card.ghost{background:rgba(255,255,255,0.02)}
+    /* central container to mimic mock's max width */
+    .app-container {
+      max-width: 980px;
+      margin: 28px auto;
+    }
 
-      @media(max-width:820px){.features{flex-direction:column}}
-      /* Streamlit iframe fixes */
-      .css-1d391kg {padding: 0 !important;}
+    /* Header */
+    .mock-header {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      gap:8px;
+      margin-bottom:18px;
+    }
+    .mock-title {
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-weight:700;
+      font-size:28px;
+      color:var(--text);
+    }
+    .logo-dot {
+      width:44px;height:44px;border-radius:50%;
+      background:var(--accent); display:flex;align-items:center;justify-content:center;
+      color:white;font-weight:700;box-shadow:0 3px 10px rgba(0,0,0,0.6);
+    }
+    .mock-sub {
+      color:var(--muted);
+      font-size:13px;
+      margin-top:2px;
+    }
+    .memory-pill {
+      margin-top:8px;
+      background:#0b1416;
+      padding:6px 10px;border-radius:8px;
+      color:#9fe3c8;font-size:13px;border:1px solid rgba(9, 150, 108, 0.06);
+    }
+
+    /* Chat card */
+    .chat-card {
+      background: linear-gradient(180deg, rgba(24,28,32,0.7), rgba(19,24,29,0.6));
+      border-radius:10px;
+      border:1px solid rgba(139,51,48,0.45);
+      padding:14px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+    }
+    .chat-card .chat-title {
+      color:var(--muted);
+      padding:6px 8px;
+      border-radius:6px;
+      margin-bottom:10px;
+      font-size:15px;
+    }
+
+    /* inner panel */
+    .chat-panel {
+      background: var(--panel-bg);
+      height:400px;
+      border-radius:6px;
+      padding:14px;
+      overflow:auto;
+      border:1px solid var(--subtle);
+    }
+
+    /* message bubbles */
+    .bubble {
+      display:inline-block;
+      padding:10px 14px;
+      border-radius:999px;
+      margin:8px 8px;
+      max-width:70%;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.45);
+      font-size:14px;
+      line-height:1.25;
+    }
+    .bubble.user {
+      background: var(--accent);
+      color: white;
+      float:right;
+      clear:both;
+      border-bottom-right-radius: 18px;
+    }
+    .bubble.bot {
+      background: rgba(0,0,0,0.55);
+      color: #fff5d1;
+      float:left;
+      clear:both;
+      border-bottom-left-radius: 18px;
+    }
+
+    /* quick reply chips on right inside panel */
+    .chips {
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      position: absolute;
+      right: 28px;
+      top: 72px;
+    }
+    .chip {
+      background: var(--accent);
+      color:white;
+      padding:8px 10px;
+      border-radius:8px;
+      font-size:13px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.35);
+      cursor:pointer;
+      border: 1px solid rgba(0,0,0,0.4);
+    }
+
+    /* Input bar container */
+    .input-row {
+      display:flex;
+      gap:8px;
+      margin-top:12px;
+      align-items:center;
+    }
+    .input-field {
+      flex:1;
+      background: #1f2a33;
+      padding:12px 16px;
+      border-radius:8px;
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--text);
+      font-size:15px;
+      min-height:48px;
+    }
+    .send-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius:8px;
+      padding:10px 16px;
+      min-width:86px;
+      font-weight:600;
+      cursor:pointer;
+      box-shadow: 0 6px 18px rgba(139,51,48,0.16);
+    }
+    .send-btn:hover{ transform: translateY(-2px); }
+
+    /* Features row */
+    .features {
+      display:flex;
+      gap:18px;
+      margin-top:24px;
+    }
+    .feature {
+      flex:1;
+      background: rgba(255,255,255,0.02);
+      border-radius:10px;
+      padding:16px;
+      border:1px solid rgba(255,255,255,0.03);
+      min-height:100px;
+    }
+    .feature h4 { margin:0 0 8px 0; color:var(--text); font-size:15px; }
+    .feature p { margin:0; color:var(--muted); font-size:13px; }
+
+    /* small tip */
+    .tip { color:var(--muted); margin-top:12px; font-size:13px; }
+
+    /* responsive */
+    @media (max-width: 900px) {
+      .chips { display:none; }
+      .chat-panel { height: 320px; }
+      .features { flex-direction:column; }
+    }
     </style>
     """,
     unsafe_allow_html=True
 )
 
-# --- Main container header ---
-st.markdown('<div class="container">', unsafe_allow_html=True)
+# -----------------------------
+# Page markup (safe triple-quoted strings)
+# -----------------------------
+st.markdown('<div class="app-container">', unsafe_allow_html=True)
 
+# Header
 st.markdown(
     f"""
-    <div class="header">
-      <div style="display:flex;align-items:center;gap:10px">
-        <div style="width:44px;height:44px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700">+</div>
-        <div style="text-align:left">
-          <div class="title">The Adaptive Loyalist AI</div>
-          <div class="subtitle">"A sensible, matured and highly cognitive companion"</div>
-        </div>
+    <div class="mock-header">
+      <div class="mock-title">
+        <div class="logo-dot">+</div>
+        <div>The Adaptive Loyalist AI</div>
       </div>
-      <div class="memory">Memory Status: <strong style="color:#9fe3c8">Online</strong> | Total Memories: <strong style="color:#9fe3c8">{len(bible_chunks)}</strong></div>
+      <div class="mock-sub">"A sensible, matured and highly cognitive companion"</div>
+      <div class="memory-pill">Memory Status: <strong style="color:#9fe3c8">Online</strong> | Total Memories: <strong style="color:#9fe3c8">{len(bible_chunks)}</strong></div>
     </div>
     """,
     unsafe_allow_html=True
 )
 
-# --- Chat card ---
+# Chat card start
 st.markdown(
     """
     <div class="chat-card">
-      <div class="chat-header">
-        <div>Chat</div>
-        <div style="color:var(--muted);font-size:18px;opacity:0.6">+</div>
-      </div>
+      <div class="chat-title">Chat</div>
     """,
     unsafe_allow_html=True
 )
 
-# Initialize session state for messages (unchanged)
+# Chat panel container
+st.markdown('<div style="position:relative">', unsafe_allow_html=True)  # wrapper to place chips absolutely
+st.markdown('<div class="chat-panel" id="chat-panel">', unsafe_allow_html=True)
+
+# initialize session state for messages
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Chat window (render messages)
-st.markdown('<div class="chat-window" id="chat-window">', unsafe_allow_html=True)
-st.markdown('<div style="clear:both"></div>', unsafe_allow_html=True)
+# Render previous messages (bubbles)
+# We'll render them as HTML within the chat panel so styles apply consistently.
+messages_html = ""
 for message in st.session_state.messages:
     if message["role"] == "user":
-        st.markdown(f'<div class="msg user">{message["content"]}</div>', unsafe_allow_html=True)
+        safe_text = message["content"].replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        messages_html += f'<div class="bubble user">{safe_text}</div>'
     else:
-        st.markdown(f'<div class="msg bot">{message["content"]}</div>', unsafe_allow_html=True)
-st.markdown('</div>', unsafe_allow_html=True)  # close chat-window
+        safe_text = message["content"].replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        messages_html += f'<div class="bubble bot">{safe_text}</div>'
 
-# --- Chat input area ---
+# If empty, add a placeholder bot bubble to match the mock.
+if messages_html.strip() == "":
+    messages_html = '<div class="bubble bot">I appreciate you sharing that with me. My thoughts are...</div>'
+
+st.markdown(messages_html, unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True)  # close chat-panel
+
+# Quick reply chips (right side)
+# List a few example chips (they won't automatically send; user can click later if you wire JS)
 st.markdown(
     """
-    <div style="margin-top:12px; display:flex; align-items:center; justify-content:center;">
-      <div style="width:100%; max-width:820px;">
+    <div class="chips">
+      <div class="chip">hi</div>
+      <div class="chip">hey</div>
+      <div class="chip">sup</div>
+      <div class="chip">o</div>
+    </div>
     """,
     unsafe_allow_html=True
 )
 
-col1, col2, col3 = st.columns([1, 2, 1])
+st.markdown('</div>', unsafe_allow_html=True)  # close wrapper (position relative)
+
+# Input area:
+# We keep the original st.chat_input to preserve streamlit's chat behavior, but we render a styled container around it.
+st.markdown(
+    """
+    <div style="margin-top:12px;">
+      <div style="display:flex;align-items:center;justify-content:center">
+        <div style="width:100%;max-width:920px;">
+    """,
+    unsafe_allow_html=True
+)
+
+col1, col2, col3 = st.columns([1, 8, 1])
 with col2:
+    # Using st.chat_input to preserve chat behavior exactly as your original logic required.
     if prompt := st.chat_input("What's buggin' ya?"):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.spinner("🤔 Thinking..."):
             response = get_persona_response(prompt, st.session_state.messages)
         st.session_state.messages.append({"role": "assistant", "content": response})
         log_conversation_to_sheet(prompt, response)
-        # Use st.stop() for compatibility where experimental_rerun is not available
+        # Stop to ensure the app refreshes - compatible with many streamlit versions
         st.stop()
 
 st.markdown(
     """
+        </div>
       </div>
     </div>
     """,
     unsafe_allow_html=True
 )
 
-# Close the chat-card container
+# Close chat-card
 st.markdown('</div>', unsafe_allow_html=True)
 
-# --- Features section (visual only) ---
+# Feature cards
 st.markdown(
     """
-    <div class="features" style="margin-top:22px;">
-      <div class="card">
-        <h3>🌐 Bilingual AI</h3>
+    <div class="features">
+      <div class="feature">
+        <h4>🌐 Bilingual AI</h4>
         <p>Fluent in both English and Hindi, responding naturally in the language you prefer.</p>
       </div>
-      <div class="card">
-        <h3>🗂️ Context Aware</h3>
+      <div class="feature">
+        <h4>🗂️ Context Aware</h4>
         <p>Remembers both long-term knowledge and short-term conversation history.</p>
       </div>
-      <div class="card ghost">
-        <h3>🔒 Privacy Focused</h3>
+      <div class="feature">
+        <h4>🔒 Privacy Focused</h4>
         <p>Conversations are securely logged for improvement while respecting your privacy.</p>
       </div>
     </div>
+    <div class="tip">Tip: This is a UI skin — backend logic and behavior unchanged.</div>
     """,
     unsafe_allow_html=True
 )
 
-st.markdown('<div style="color:var(--muted);margin-top:12px;font-size:13px">Tip: This is a visual UI skin — backend logic and behavior unchanged.</div>', unsafe_allow_html=True)
-
-# Optional JS to auto-scroll chat-window to bottom.
+# Auto-scroll: attempt to scroll the panel to bottom on load (best-effort)
 st.markdown(
     """
     <script>
     (function() {
-        const chat = document.getElementById('chat-window');
-        if (chat) {
-            chat.scrollTop = chat.scrollHeight;
-        }
+      try {
+        const panel = document.getElementById('chat-panel');
+        if (panel) panel.scrollTop = panel.scrollHeight;
+      } catch(e){}
     })();
     </script>
     """,
     unsafe_allow_html=True
 )
 
+st.markdown('</div>', unsafe_allow_html=True)  # close app-container
