@@ -8,6 +8,7 @@ from sentence_transformers import SentenceTransformer
 import gspread
 from google.oauth2.service_account import Credentials
 import json
+import streamlit.components.v1 as components
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -413,7 +414,20 @@ st.markdown("""
             Memory Status: <span class="memory-online">Online</span> | Total Memories: """ + str(len(bible_chunks)) + """
         </div>
     </div>
-    
+""", unsafe_allow_html=True)
+
+
+# --- About Section Expander ---
+with st.expander("ℹ️ About this App"):
+    try:
+        with open("about.html", "r", encoding="utf-8") as f:
+            about_html = f.read()
+        components.html(about_html, height=250, scrolling=True)
+    except FileNotFoundError:
+        st.warning("about.html file not found.")
+
+
+st.markdown("""
     <!-- Chat Wrapper -->
     <div class="chat-wrapper">
         <div class="chat-header">
