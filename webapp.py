@@ -1,3 +1,4 @@
+# webapp_streamlit_ui.py
 import streamlit as st
 import google.generativeai as genai
 import os
@@ -11,316 +12,22 @@ import json
 
 # --- Page Configuration ---
 st.set_page_config(
-    page_title="ENtroP",
+    page_title="The Adaptive Loyalist AI",
     page_icon="🤖",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
 
-# --- Custom CSS ---
-st.markdown("""
-<style>
-    /* Hide Streamlit default elements */
-    .stApp > header[data-testid="stHeader"] {
-        background-color: transparent;
-    }
-    
-    .main .block-container {
-        padding-top: 2rem;
-        padding-left: 2rem;
-        padding-right: 2rem;
-        max-width: 1200px;
-    }
-    
-    /* Custom burgundy colors - Dark Mode */
-    :root {
-        --burgundy-50: #1A1A1A;
-        --burgundy-100: #2D2D2D;
-        --burgundy-200: #404040;
-        --burgundy-300: #8B5A5A;
-        --burgundy-400: #B85C5C;
-        --burgundy-500: #D88B8B;
-        --burgundy-600: #E8A8A8;
-        --burgundy-700: #F0C0C0;
-        --text-primary: #FFFFFF;
-        --text-secondary: #B0B0B0;
-        --text-muted: #888888;
-    }
-    
-    /* Background */
-    .stApp {
-        background-color: var(--burgundy-50);
-    }
-    
-    /* Header styling */
-    .custom-header {
-        text-align: center;
-        margin-bottom: 2rem;
-        padding: 2rem;
-        background: white;
-        border-radius: 1rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border: 2px solid var(--burgundy-300);
-    }
-    
-    .custom-header h1 {
-        color: var(--burgundy-600);
-        font-size: 2.5rem;
-        font-weight: bold;
-        margin: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
-    }
-    
-    .custom-header .subtitle {
-        color: var(--burgundy-400);
-        font-style: italic;
-        font-size: 1.2rem;
-        margin: 1rem 0;
-    }
-    
-    .memory-status {
-        background-color: var(--burgundy-100);
-        color: var(--burgundy-600);
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
-        display: inline-block;
-        font-weight: 500;
-        margin-top: 1rem;
-    }
-    
-    /* Chat container styling */
-    .chat-container {
-        background: var(--burgundy-100);
-        border-radius: 1rem;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        border: 2px solid var(--burgundy-200);
-        margin: 2rem 0;
-        overflow: hidden;
-    }
-    
-    /* Features section */
-    .features-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin: 3rem 0;
-    }
-    
-    .feature-card {
-        background: var(--burgundy-100);
-        padding: 2rem;
-        border-radius: 1rem;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        border: 2px solid var(--burgundy-200);
-        transition: all 0.3s ease;
-    }
-    
-    .feature-card:hover {
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-        transform: translateY(-2px);
-        border-color: var(--burgundy-300);
-    }
-    
-    .feature-card h3 {
-        color: var(--text-primary);
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-    }
-    
-    .feature-card p {
-        color: var(--text-secondary);
-        line-height: 1.6;
-    }
-    
-    .feature-icon {
-        color: var(--burgundy-500);
-        font-size: 2rem;
-        margin-bottom: 1rem;
-    }
-    
-    /* Message styling */
-    .user-message {
-        background-color: var(--burgundy-400);
-        color: white;
-        padding: 1rem;
-        border-radius: 1rem;
-        border-bottom-right-radius: 0.25rem;
-        margin: 1rem 0;
-        max-width: 70%;
-        margin-left: auto;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-    
-    .assistant-message {
-        background-color: var(--burgundy-200);
-        color: var(--text-primary);
-        padding: 1rem;
-        border-radius: 1rem;
-        border-bottom-left-radius: 0.25rem;
-        margin: 1rem 0;
-        max-width: 70%;
-        margin-right: auto;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-    
-    /* Hide default Streamlit chat styling */
-    .stChatMessage {
-        background: transparent !important;
-    }
-    
-    /* Custom input styling */
-    .stChatInput {
-        position: relative;
-        max-width: 700px;
-        margin: 3rem auto;
-        padding: 0;
-    }
-    
-    .stChatInput > div {
-        background: transparent !important;
-        border: none !important;
-        padding: 0 !important;
-    }
-    
-    .stChatInput textarea {
-        border: 1px solid var(--burgundy-200) !important;
-        border-radius: 0 !important;
-        background-color: var(--burgundy-100) !important;
-        min-height: 55px !important;
-        max-height: 120px !important;
-        padding: 1.2rem 1.5rem !important;
-        color: var(--text-primary) !important;
-        font-weight: 400 !important;
-        font-size: 1rem !important;
-        line-height: 1.5 !important;
-        resize: none !important;
-        transition: all 0.2s ease !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
-    }
-    
-    .stChatInput textarea:focus {
-        border-color: var(--burgundy-400) !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-        outline: none !important;
-    }
-    
-    .stChatInput textarea::placeholder {
-        color: var(--text-muted) !important;
-        opacity: 1 !important;
-        font-style: italic !important;
-    }
-    
-    .stChatInput button {
-        background-color: var(--burgundy-400) !important;
-        border: 1px solid var(--burgundy-400) !important;
-        border-radius: 0 !important;
-        color: white !important;
-        font-weight: 500 !important;
-        padding: 0.8rem 1.5rem !important;
-        transition: all 0.2s ease !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
-        height: auto !important;
-        min-height: 55px !important;
-    }
-    
-    .stChatInput button:hover {
-        background-color: var(--burgundy-500) !important;
-        border-color: var(--burgundy-500) !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-        transform: translateY(-1px) !important;
-    }
-    
-    .stChatInput button:active {
-        transform: translateY(0) !important;
-        box-shadow: 0 2px 6px rgba(139, 0, 0, 0.2) !important;
-    }
-    
-    /* Clean spacing around input */
-    .stChatInput + div {
-        margin-top: 0 !important;
-    }
-    
-    /* Animated elements */
-    .pulse-animation {
-        animation: pulse 2s infinite;
-    }
-    
-    .bounce-animation {
-        animation: spin-horizontal 2s linear infinite;
-        display: inline-block;
-        transform-origin: center;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
-    }
-    
-    @keyframes spin-horizontal {
-        0% { transform: rotateY(0deg); }
-        100% { transform: rotateY(360deg); }
-    }
-    
-    /* Additional styling for better appearance */
-    .streamlit-expanderHeader {
-        display: none;
-    }
-    
-    /* Custom scrollbar for better aesthetics */
-    ::-webkit-scrollbar {
-        width: 8px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: var(--burgundy-100);
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: var(--burgundy-400);
-        border-radius: 4px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--burgundy-500);
-    }
-    
-    /* Icons */
-    .icon {
-        display: inline-block;
-        width: 1.5rem;
-        height: 1.5rem;
-        margin-right: 0.5rem;
-        vertical-align: middle;
-    }
-    
-    .large-icon {
-        width: 2.5rem;
-        height: 2.5rem;
-        margin-bottom: 1rem;
-    }
-    
-    /* Fix for Streamlit spacing */
-    .block-container {
-        padding-top: 1rem;
-    }
-</style>
-""", unsafe_allow_html=True)
-
-# --- Configuration ---
+# --- Keep original logic & secrets usage untouched ---
 GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 BIBLE_FILE = "Character_Bible.txt"
 SHEET_NAME = "AI_Chat_Logs"
 
-# --- Initialization ---
-# Configure the Gemini AI model
+# Configure the Gemini AI model (unchanged)
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-1.5-flash')
 
-# Configure Google Sheets access
+# Configure Google Sheets access (unchanged)
 @st.cache_resource
 def get_gspread_client():
     scopes = [
@@ -337,14 +44,14 @@ gs_client = get_gspread_client()
 spreadsheet = gs_client.open(SHEET_NAME)
 worksheet = spreadsheet.worksheet("Sheet1")
 
-# Load the sentence transformer model
+# Load the sentence transformer model (unchanged)
 @st.cache_resource
 def load_embedding_model():
     return SentenceTransformer('all-MiniLM-L6-v2')
 
 embedding_model = load_embedding_model()
 
-# Build vector store
+# Build vector store (unchanged)
 @st.cache_resource
 def build_vector_store():
     with open(BIBLE_FILE, 'r', encoding='utf-8') as f:
@@ -391,91 +98,59 @@ def get_persona_response(question, chat_history):
     response = model.generate_content(final_prompt)
     return response.text
 
-# --- Custom Header ---
-st.markdown(f"""
-<div class="custom-header">
-    <h1>
-        <span class="bounce-animation">🌪️</span> The Adaptive Loyalist AI
-    </h1>
-    <p class="subtitle">"A sensible, matured and highly cognitive companion"</p>
-    <div class="memory-status">
-        📊 Memory Status: <span style="color: #059669;">Online</span> | Total Memories: <span>{len(bible_chunks)}</span>
-    </div>
-</div>
-""", unsafe_allow_html=True)
-
-# --- Chat Interface ---
-st.markdown('<div class="chat-container">', unsafe_allow_html=True)
-
-# Initialize chat history
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-# Display chat messages with custom styling
-for message in st.session_state.messages:
-    if message["role"] == "user":
-        st.markdown(f'<div class="user-message">{message["content"]}</div>', unsafe_allow_html=True)
-    else:
-        st.markdown(f'<div class="assistant-message">{message["content"]}</div>', unsafe_allow_html=True)
-
-st.markdown('</div>', unsafe_allow_html=True)
-
-# Chat input - moved above features section and made shorter
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    if prompt := st.chat_input("What's buggin' ya?"):
-        # Add user message to chat history
-        st.session_state.messages.append({"role": "user", "content": prompt})
-        
-        # Generate and display assistant response
-        with st.spinner("🤔 Thinking..."):
-            response = get_persona_response(prompt, st.session_state.messages)
-        
-        st.session_state.messages.append({"role": "assistant", "content": response})
-        
-        # Log the conversation
-        log_conversation_to_sheet(prompt, response)
-        
-        # Rerun to update the display
-        st.rerun()
-
-# --- Features Section ---
+# --- UI: CSS and layout replaced to match the mock (visual only) ---
 st.markdown("""
-<div class="features-container">
-    <div class="feature-card">
-        <div class="feature-icon large-icon">🌐</div>
-        <h3>Bilingual AI</h3>
-        <p>Fluent in both English and Hindi, responding naturally in the language you prefer.</p>
-    </div>
-    <div class="feature-card">
-        <div class="feature-icon large-icon">📚</div>
-        <h3>Context Aware</h3>
-        <p>Remembers both long-term knowledge and short-term conversation history.</p>
-    </div>
-    <div class="feature-card">
-        <div class="feature-icon large-icon">🛡️</div>
-        <h3>Privacy Focused</h3>
-        <p>Conversations are securely logged for improvement while respecting your privacy.</p>
-    </div>
-</div>
+<style>
+  :root{
+    --bg:#0f1720;
+    --panel:#17202a;
+    --accent:#8b3330;
+    --muted:#9aa3ad;
+  }
+  *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  body{margin:0;background:var(--bg);color:#e6eef6}
+  .container{max-width:1100px;margin:24px auto;padding:12px}
+  .header{display:flex;align-items:center;justify-content:center;flex-direction:column;margin-bottom:18px}
+  .title{margin:6px 0;font-size:28px;font-weight:700;color:#fff}
+  .subtitle{margin:0;color:var(--muted);font-size:13px}
+  .memory{background:#0b1a1f;padding:6px 10px;border-radius:8px;color:#9fe3c8;margin-top:10px;font-size:13px}
+
+  .chat-card{background:linear-gradient(180deg, rgba(24,30,36,0.9), rgba(19,24,29,0.9));border:1px solid rgba(139,51,48,0.6);border-radius:8px;padding:14px;margin:18px 0}
+  .chat-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:var(--muted)}
+  .chat-window{height:420px;background:var(--panel);border-radius:4px;padding:12px;overflow:auto;border:1px solid rgba(255,255,255,0.02)}
+  .msg.user{float:right;background:rgba(139,51,48,0.95);padding:10px 12px;border-radius:6px;color:#fff;display:inline-block;margin:6px;clear:both;max-width:70%}
+  .msg.bot{float:left;background:rgba(0,0,0,0.45);padding:10px 12px;border-radius:6px;color:#ffd;display:inline-block;margin:6px;clear:both;max-width:70%}
+  .input-row{display:flex;margin-top:12px}
+  .input-row input{flex:1;padding:12px;border-radius:6px 0 0 6px;border:1px solid rgba(255,255,255,0.04);background:#1f2a33;color:#cdd9e6}
+  .input-row button{background:var(--accent);border:none;color:#fff;padding:0 18px;border-radius:0 6px 6px 0;cursor:pointer}
+
+  .features{display:flex;gap:18px;margin-top:22px}
+  .card{flex:1;background:transparent;border:1px solid rgba(255,255,255,0.05);padding:18px;border-radius:8px;min-height:110px}
+  .card h3{margin:0 0 6px 0;font-size:15px}
+  .card p{margin:0;color:var(--muted);font-size:13px}
+  .card.ghost{background:rgba(255,255,255,0.02)}
+
+  @media(max-width:820px){.features{flex-direction:column}}
+  /* Streamlit iframe fixes */
+  .css-1d391kg {padding: 0 !important;} /* sometimes outer padding, may vary by Streamlit version */
+</style>
 """, unsafe_allow_html=True)
 
-# --- JavaScript for animations (optional enhancement) ---
+# --- Main container header ---
+st.markdown('<div class="container">', unsafe_allow_html=True)
 st.markdown("""
-<script>
-// Add some interactive animations
-document.addEventListener('DOMContentLoaded', function() {
-    // Add hover effects to feature cards
-    const cards = document.querySelectorAll('.feature-card');
-    cards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-5px)';
-        });
-        card.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0)';
-        });
-    });
-});
-</script>
-""", unsafe_allow_html=True)
+  <div class="header">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:44px;height:44px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700">+</div>
+      <div style="text-align:left">
+        <div class="title">The Adaptive Loyalist AI</div>
+        <div class="subtitle">"A sensible, matured and highly cognitive companion"</div>
+      </div>
+    </div>
+    <div class="memory">Memory Status: <strong style="color:#9fe3c8">Online</strong> | Total Memories: <strong style="color:#9fe3c8">{mem_count}</strong></div>
+  </div>
+""".format(mem_count=len(bible_chunks)), unsafe_allow_html=True)
 
+# --- Chat card ---
+st.markdown('<div class="chat-card">', unsafe_allow_html=True)
+st.markdown('<div class="chat-header"><div>Chat</div><div style="color:var(--muted);font-size:18px;opacity:0.6">+</div
