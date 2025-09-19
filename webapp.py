@@ -11,8 +11,8 @@ import json
 
 # --- Page Configuration ---
 st.set_page_config(
-    page_title="The Adaptive Loyalist AI",
-    page_icon="🤖",
+    page_title="Bliss v(1.5)",
+    page_icon="⚛",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
@@ -397,7 +397,7 @@ st.markdown(f"""
     <h1>
         <span class="wiggle-animation">⚛</span> Bliss
     </h1>
-    <p class="subtitle">"A sensible, matured and highly cognitive companion"</p>
+    <p class="subtitle">"Soemthing Bothering you? Dump here!"</p>
     <div class="memory-status">
         📊 Memory Status: <span style="color: #059669;">Online</span> | Total Memories: <span>{len(bible_chunks)}</span>
     </div>
@@ -478,4 +478,5 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 """, unsafe_allow_html=True)
+
 
