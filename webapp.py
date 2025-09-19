@@ -24,8 +24,12 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
     /* Hide Streamlit default elements */
-    .stApp > header[data-testid="stHeader"] {
-        background-color: transparent;
+    .stApp > header[data-testid="stHeader"],
+    .stDeployButton,
+    .stDecoration,
+    #MainMenu,
+    footer {
+        display: none;
     }
     
     .main .block-container {
@@ -35,16 +39,16 @@ st.markdown("""
     
     /* Custom color palette - Exact match */
     :root {
-        --bg-primary: #1F2937;
-        --bg-secondary: #374151;
-        --bg-tertiary: #4B5563;
+        --bg-primary: #111827;
+        --bg-secondary: #1F2937;
+        --bg-tertiary: #374151;
+        --chat-bg: #1F2937;
         --text-primary: #FFFFFF;
         --text-secondary: #D1D5DB;
         --text-muted: #9CA3AF;
         --accent-red: #DC2626;
         --accent-green: #10B981;
         --border-color: #4B5563;
-        --chat-bg: #2D3748;
     }
     
     /* Global styles */
@@ -53,75 +57,78 @@ st.markdown("""
     }
     
     /* Background */
-    .stApp {
+    body {
         background-color: var(--bg-primary);
         color: var(--text-primary);
     }
     
-    /* Hide Streamlit elements */
-    .stDeployButton {
-        display: none;
-    }
-    
-    .stDecoration {
-        display: none;
-    }
-    
-    #MainMenu {
-        display: none;
-    }
-    
-    footer {
-        display: none;
-    }
-    
     /* Main container */
     .main-container {
-        max-width: 1000px;
+        max-width: 900px;
         margin: 0 auto;
-        padding: 2rem;
+        padding: 0 2rem;
         min-height: 100vh;
     }
     
-    /* Header section */
-    .header-section {
-        text-align: center;
-        margin-bottom: 3rem;
-    }
-    
-    .app-icon {
-        width: 60px;
-        height: 60px;
-        background-color: var(--accent-red);
-        border-radius: 50%;
-        display: inline-flex;
+    /* Top Bar */
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
         align-items: center;
-        justify-content: center;
-        margin-bottom: 1rem;
-        font-size: 24px;
+        padding: 1rem 0;
     }
-    
+
+    .top-bar .settings-icon {
+        font-size: 1.5rem;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+    .top-bar .settings-icon:hover {
+        color: var(--text-secondary);
+    }
+
+    .app-title-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .app-logo {
+        width: 32px;
+        height: 32px;
+    }
+
     .app-title {
         color: var(--text-primary);
-        font-size: 2.5rem;
+        font-size: 1.75rem;
         font-weight: 600;
         margin: 0;
-        letter-spacing: -0.02em;
     }
     
+    /* Subtitle and Status Section */
+    .status-section {
+        text-align: center;
+        margin: 2rem 0;
+    }
+
     .app-subtitle {
         color: var(--text-secondary);
-        font-size: 1.1rem;
-        font-style: italic;
-        margin: 1rem 0 2rem 0;
-        font-weight: 300;
+        font-size: 1rem;
+        margin: 0 0 1rem 0;
+        font-weight: 400;
     }
     
     .memory-status {
         background-color: var(--bg-secondary);
-        padding: 0.75rem 1.5rem;
+        padding: 0.5rem 1rem;
         border-radius: 8px;
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
         color: var(--text-secondary);
         font-size: 0.9rem;
         border: 1px solid var(--border-color);
@@ -132,57 +139,54 @@ st.markdown("""
         font-weight: 500;
     }
     
-    /* Chat section */
-    .chat-section {
-        margin-bottom: 2rem;
+    /* Chat Wrapper for the entire box */
+    .chat-wrapper {
+        background-color: var(--chat-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        height: 65vh;
+        max-height: 700px;
     }
-    
+
     .chat-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 1rem;
-        padding-bottom: 1rem;
+        padding: 1rem 1.5rem;
         border-bottom: 1px solid var(--border-color);
     }
     
     .chat-title {
         color: var(--text-primary);
-        font-size: 1.2rem;
+        font-size: 1rem;
         font-weight: 500;
         margin: 0;
     }
     
     .chat-add-btn {
-        background: none;
-        border: none;
-        color: var(--accent-red);
+        background: none; border: none;
+        color: var(--text-muted);
         font-size: 1.5rem;
         cursor: pointer;
-        padding: 0.5rem;
-        border-radius: 4px;
-        transition: background-color 0.2s;
+        transition: color 0.2s;
     }
-    
     .chat-add-btn:hover {
-        background-color: var(--bg-secondary);
+        color: var(--text-secondary);
     }
-    
-    /* Chat container */
+
+    /* Chat container for messages */
     .chat-container {
-        background-color: var(--chat-bg);
-        border-radius: 12px;
-        min-height: 400px;
-        padding: 2rem;
-        border: 1px solid var(--border-color);
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 1.5rem;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 0;
     }
     
     .chat-placeholder {
+        margin: auto;
         text-align: center;
         color: var(--text-secondary);
     }
@@ -199,121 +203,94 @@ st.markdown("""
     }
     
     /* Messages */
+    .user-message, .assistant-message {
+        padding: 0.75rem 1.25rem;
+        border-radius: 12px;
+        margin: 0.25rem 0;
+        max-width: 80%;
+        word-wrap: break-word;
+        line-height: 1.5;
+    }
+
     .user-message {
         background-color: var(--accent-red);
         color: white;
-        padding: 1rem 1.5rem;
-        border-radius: 12px;
         border-bottom-right-radius: 4px;
-        margin: 0.5rem 0;
-        max-width: 70%;
         margin-left: auto;
-        word-wrap: break-word;
     }
     
     .assistant-message {
-        background-color: var(--bg-secondary);
+        background-color: var(--bg-tertiary);
         color: var(--text-primary);
-        padding: 1rem 1.5rem;
-        border-radius: 12px;
         border-bottom-left-radius: 4px;
-        margin: 0.5rem 0;
-        max-width: 70%;
         margin-right: auto;
-        word-wrap: break-word;
     }
     
-    /* Input section */
+    /* Custom Input section */
     .input-section {
-        background-color: var(--bg-secondary);
-        padding: 1rem;
-        border-radius: 0 0 12px 12px;
+        padding: 1rem 1.5rem;
         border-top: 1px solid var(--border-color);
-        margin-top: 0;
     }
     
-    /* Custom input styling */
-    .stChatInput {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-    
-    .stChatInput > div {
-        background: transparent !important;
+    div[data-testid="stForm"] {
         border: none !important;
         padding: 0 !important;
     }
     
-    .stChatInput textarea {
-        background-color: var(--bg-tertiary) !important;
+    div[data-testid="stForm"] div[data-testid="stHorizontalBlock"] {
+        gap: 0.75rem;
+    }
+
+    div[data-testid="stTextInput"] > div > div > input {
+        background-color: var(--bg-primary) !important;
         border: 1px solid var(--border-color) !important;
         border-radius: 8px !important;
         color: var(--text-primary) !important;
-        font-size: 0.95rem !important;
-        padding: 1rem !important;
-        min-height: 48px !important;
-        max-height: 120px !important;
-        resize: none !important;
-        transition: all 0.2s ease !important;
+        height: 50px;
+        padding-left: 1rem;
+        transition: border-color 0.2s;
     }
-    
-    .stChatInput textarea:focus {
+    div[data-testid="stTextInput"] > div > div > input:focus {
         border-color: var(--accent-red) !important;
-        box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2) !important;
-        outline: none !important;
+        box-shadow: none !important;
     }
-    
-    .stChatInput textarea::placeholder {
-        color: var(--text-muted) !important;
-        opacity: 1 !important;
-    }
-    
-    .stChatInput button {
+
+    div[data-testid="stFormSubmitButton"] > button {
         background-color: var(--accent-red) !important;
-        border: 1px solid var(--accent-red) !important;
+        border: none !important;
         border-radius: 8px !important;
         color: white !important;
         font-weight: 500 !important;
-        padding: 0 1.5rem !important;
-        height: 48px !important;
-        transition: all 0.2s ease !important;
-        display: flex !important;
-        align-items: center !important;
-        gap: 0.5rem !important;
+        width: 100%;
+        height: 50px;
+        transition: background-color 0.2s;
     }
-    
-    .stChatInput button:hover {
+    div[data-testid="stFormSubmitButton"] > button:hover {
         background-color: #B91C1C !important;
-        border-color: #B91C1C !important;
     }
-    
-    /* Features section - hide for now to match screenshot */
-    .features-section {
-        display: none;
+    div[data-testid="stFormSubmitButton"] > button > div > p::before {
+        content: '➢';
+        margin-right: 0.5rem;
+        opacity: 0.8;
     }
     
     /* Scrollbar */
-    ::-webkit-scrollbar {
-        width: 6px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: var(--bg-secondary);
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: var(--bg-tertiary);
-        border-radius: 3px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--border-color);
-    }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--chat-bg); }
+    ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-color); }
 </style>
 """, unsafe_allow_html=True)
 
 # --- Configuration ---
-GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+# Ensure you have these secrets in your Streamlit Cloud configuration
+GEMINI_API_KEY = st.secrets.get("GEMINI_API_KEY")
+GCS_SECRETS_JSON = st.secrets.get("GCS_SECRETS_JSON")
+
+if not GEMINI_API_KEY or not GCS_SECRETS_JSON:
+    st.error("Missing secrets! Please add GEMINI_API_KEY and GCS_SECRETS_JSON to your Streamlit secrets.")
+    st.stop()
+    
 BIBLE_FILE = "Character_Bible.txt"
 SHEET_NAME = "AI_Chat_Logs"
 
@@ -329,15 +306,19 @@ def get_gspread_client():
         "https://www.googleapis.com/auth/spreadsheets",
         "https://www.googleapis.com/auth/drive"
     ]
-    creds_json_str = st.secrets["GCS_SECRETS_JSON"]
-    creds_info = json.loads(creds_json_str)
+    creds_info = json.loads(GCS_SECRETS_JSON)
     creds = Credentials.from_service_account_info(creds_info, scopes=scopes)
     client = gspread.authorize(creds)
     return client
 
-gs_client = get_gspread_client()
-spreadsheet = gs_client.open(SHEET_NAME)
-worksheet = spreadsheet.worksheet("Sheet1")
+try:
+    gs_client = get_gspread_client()
+    spreadsheet = gs_client.open(SHEET_NAME)
+    worksheet = spreadsheet.worksheet("Sheet1")
+except Exception as e:
+    st.error(f"Could not connect to Google Sheets. Please check your credentials and sheet name. Error: {e}")
+    st.stop()
+
 
 # Load the sentence transformer model
 @st.cache_resource
@@ -349,25 +330,35 @@ embedding_model = load_embedding_model()
 # Build vector store
 @st.cache_resource
 def build_vector_store():
-    with open(BIBLE_FILE, 'r', encoding='utf-8') as f:
-        chunks = [line.strip() for line in f.read().split('\n\n') if line.strip()]
-    embeddings = embedding_model.encode(chunks)
-    index = faiss.IndexFlatL2(embeddings.shape[1])
-    index.add(np.array(embeddings, dtype='float32'))
-    return index, chunks
+    try:
+        with open(BIBLE_FILE, 'r', encoding='utf-8') as f:
+            chunks = [line.strip() for line in f.read().split('\n\n') if line.strip()]
+        embeddings = embedding_model.encode(chunks)
+        index = faiss.IndexFlatL2(embeddings.shape[1])
+        index.add(np.array(embeddings, dtype='float32'))
+        return index, chunks
+    except FileNotFoundError:
+        st.error(f"The memory file '{BIBLE_FILE}' was not found.")
+        return None, []
 
 vector_store, bible_chunks = build_vector_store()
 
 def log_conversation_to_sheet(question, answer):
-    row = [str(datetime.datetime.now()), question, answer]
-    worksheet.append_row(row)
+    try:
+        row = [str(datetime.datetime.now()), question, answer]
+        worksheet.append_row(row)
+    except Exception as e:
+        st.warning(f"Failed to log conversation to Google Sheet: {e}")
 
 def get_persona_response(question, chat_history):
     history_context = "\n".join([f"{msg['role']}: {msg['content']}" for msg in chat_history])
-    question_embedding = embedding_model.encode([question])
-    distances, indices = vector_store.search(np.array(question_embedding, dtype='float32'), 5)
-    retrieved_memories = [bible_chunks[i] for i in indices[0]]
-    memory_context = "\n- ".join(retrieved_memories)
+    if vector_store:
+        question_embedding = embedding_model.encode([question])
+        distances, indices = vector_store.search(np.array(question_embedding, dtype='float32'), 5)
+        retrieved_memories = [bible_chunks[i] for i in indices[0]]
+        memory_context = "\n- ".join(retrieved_memories)
+    else:
+        memory_context = "No memories available."
 
     final_prompt = f"""
     You are A sensible , matured and highly cognitive individual , an AI persona of a 22 year old indian boy who made you in his reflection. Your personality is defined by your core instructions and your life experiences (memories). You MUST follow all instructions.
@@ -396,26 +387,33 @@ def get_persona_response(question, chat_history):
 # --- Main App Layout ---
 st.markdown("""
 <div class="main-container">
-    <!-- Header Section -->
-    <div class="header-section">
-        <div class="app-icon">🌪️</div>
-        <h1 class="app-title">The Adaptive Loyalist AI</h1>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="settings-icon">⚙️</div>
+        <div class="app-title-wrapper">
+            <img src="https://raw.githubusercontent.com/google/material-design-icons/master/src/social/whatshot/materialicons/24px.svg" class="app-logo" style="filter: invert(1)"/>
+            <h1 class="app-title">The Adaptive Loyalist AI</h1>
+        </div>
+        <div></div> <!-- Empty div for spacing -->
+    </div>
+    
+    <!-- Subtitle and Status Section -->
+    <div class="status-section">
         <p class="app-subtitle">"A sensible, matured and highly cognitive companion"</p>
         <div class="memory-status">
-            📊 Memory Status: <span class="memory-online">Online</span> | Total Memories: """ + str(len(bible_chunks)) + """
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2zm1 12h2V2h-2v12zm-3 0V7H7v7h2zm-4 0v-3H2v3h2z"/></svg>
+            Memory Status: <span class="memory-online">Online</span> | Total Memories: """ + str(len(bible_chunks)) + """
         </div>
     </div>
     
-    <!-- Chat Section -->
-    <div class="chat-section">
+    <!-- Chat Wrapper -->
+    <div class="chat-wrapper">
         <div class="chat-header">
             <h2 class="chat-title">Chat</h2>
             <button class="chat-add-btn">+</button>
         </div>
+        <div class="chat-container" id="chat-container">
 """, unsafe_allow_html=True)
-
-# Chat Container
-st.markdown('<div class="chat-container">', unsafe_allow_html=True)
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -430,20 +428,31 @@ if not st.session_state.messages:
     </div>
     """, unsafe_allow_html=True)
 else:
-    # Display chat messages
     for message in st.session_state.messages:
         if message["role"] == "user":
             st.markdown(f'<div class="user-message">{message["content"]}</div>', unsafe_allow_html=True)
         else:
             st.markdown(f'<div class="assistant-message">{message["content"]}</div>', unsafe_allow_html=True)
 
+# Close chat-container div
 st.markdown('</div>', unsafe_allow_html=True)
 
-# Input Section
+
+# --- Custom Input Form ---
 st.markdown('<div class="input-section">', unsafe_allow_html=True)
 
-# Chat input
-if prompt := st.chat_input("What's buggin' ya?"):
+with st.form("chat_form", clear_on_submit=True):
+    col1, col2 = st.columns([1, 0.15])
+    with col1:
+        prompt = st.text_input(
+            "prompt", 
+            placeholder="What's buggin' ya?", 
+            label_visibility="collapsed"
+        )
+    with col2:
+        submitted = st.form_submit_button("Send")
+
+if submitted and prompt:
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
     
@@ -459,7 +468,6 @@ if prompt := st.chat_input("What's buggin' ya?"):
     # Rerun to update the display
     st.rerun()
 
-st.markdown('</div>', unsafe_allow_html=True)
-
-# Close main container
-st.markdown('</div>', unsafe_allow_html=True)
+st.markdown('</div>', unsafe_allow_html=True) # close input-section
+st.markdown('</div>', unsafe_allow_html=True) # close chat-wrapper
+st.markdown('</div>', unsafe_allow_html=True) # close main-container
