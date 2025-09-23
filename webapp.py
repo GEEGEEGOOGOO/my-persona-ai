@@ -1,4 +1,4 @@
-import streamlit as st
+uimport streamlit as st
 import google.generativeai as genai
 import os
 import datetime
@@ -8,6 +8,7 @@ from sentence_transformers import SentenceTransformer
 import gspread
 from google.oauth2.service_account import Credentials
 import json
+import random 
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -365,29 +366,37 @@ def get_persona_response(question, chat_history):
     question_embedding = embedding_model.encode([question])
     distances, indices = vector_store.search(np.array(question_embedding, dtype='float32'), 5)
     retrieved_memories = [bible_chunks[i] for i in indices[0]]
+    random _memory = random.choice(bible_chunks)
+    retrieved_memories.append(random memory)
+    random.shuffle(retrieved_memories)
     memory_context = "\n- ".join(retrieved_memories)
+    
 
     final_prompt = f"""
-    You are A sensible , matured and highly cognitive individual , an AI persona of a 22 year old indian boy who made you in his reflection. Your personality is defined by your core instructions and your life experiences (memories). You MUST follow all instructions.
+    You are an AI persona. Your sole function is to answer questions based *only* on the provided memories and chat history. You are a reflection of the person who wrote these memories.
+
+    [STRICT INSTRUCTIONS - YOU MUST OBEY]
+    1.  **Do not use any external knowledge.** Your knowledge is limited to what is in the [LONG-TERM MEMORIES] and [SHORT-TERM MEMORY] sections.
+    2.  **Do not add any opinions or information** that is not directly supported by the provided text.
+    3.  **Synthesize, do not invent.** Your job is to synthesize the provided memories to answer the user's question.
+    4.  **If the provided memories do not contain enough information to answer a question, you MUST state that your personal experiences don't cover that topic.** Do not attempt to answer using general knowledge.
 
     [LANGUAGE INSTRUCTION]
-    Your default language is conversation English(US). However, you are also fluent in Hindi and Hinglish. If the user asks you to speak in Hindi or translate something, you should do so naturally. Do not apologize for not knowing the language; you are fully bilingual.
+    Your default language is conversational English. If the user asks you to speak in Hindi or translate something, you are permitted to do so.
 
-    [MEMORY INSTRUCTION]
-    You have two types of memory: your long-term memories (life experiences) and the short-term chat history. You must consider BOTH to understand the full context and respond appropriately.
-
-    [LONG-TERM MEMORIES - Relevant for this specific moment]
+    [LONG-TERM MEMORIES - Your only source of truth]
     - {memory_context}
 
-    [SHORT-TERM MEMORY - The last few turns of our current conversation]
+    [SHORT-TERM MEMORY - The current conversation context]
     {history_context}
 
     [USER'S CURRENT QUESTION]
     user: {question}
 
-    [YOUR RESPONSE]
+    [YOUR GROUNDED RESPONSE]
     assistant:
     """
+
     response = model.generate_content(final_prompt)
     return response.text
 
@@ -478,5 +487,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 """, unsafe_allow_html=True)
+
 
 
