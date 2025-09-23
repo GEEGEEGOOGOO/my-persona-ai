@@ -1,4 +1,4 @@
-uimport streamlit as st
+import streamlit as st
 import google.generativeai as genai
 import os
 import datetime
@@ -487,6 +487,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 """, unsafe_allow_html=True)
+
 
 
 
