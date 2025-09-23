@@ -366,7 +366,7 @@ def get_persona_response(question, chat_history):
     question_embedding = embedding_model.encode([question])
     distances, indices = vector_store.search(np.array(question_embedding, dtype='float32'), 5)
     retrieved_memories = [bible_chunks[i] for i in indices[0]]
-    random _memory = random.choice(bible_chunks)
+    random_memory = random.choice(bible_chunks)
     retrieved_memories.append(random memory)
     random.shuffle(retrieved_memories)
     memory_context = "\n- ".join(retrieved_memories)
@@ -487,6 +487,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 """, unsafe_allow_html=True)
+
 
 
 
