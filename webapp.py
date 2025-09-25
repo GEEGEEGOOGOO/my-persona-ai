@@ -218,7 +218,7 @@ st.markdown("""
     .stChatInput button {
         background-color: var(--burgundy-400) !important;
         border: 1px solid var(--burgundy-400) !important;
-        border-radius: 0 !important;
+        border-radius: 4 !important;
         color: white !important;
         font-weight: 500 !important;
         padding: 0.8rem 1.5rem !important;
@@ -490,6 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 """, unsafe_allow_html=True)
+
 
 
 
