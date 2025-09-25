@@ -231,7 +231,7 @@ st.markdown("""
     .stChatInput button:hover {
         background-color: var(--burgundy-500) !important;
         border-color: var(--burgundy-500) !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+        box-shadow: 0 12px 12px rgba(0, 0, 0, 0.4) !important;
         transform: translateY(-1px) !important;
     }
     
@@ -490,6 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 """, unsafe_allow_html=True)
+
 
 
 
